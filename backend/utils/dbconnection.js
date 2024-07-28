@@ -1,23 +1,24 @@
 import mongoose from "mongoose";
-import config from "../config/configs.js";
+import config from "../config/configs";
 
 let database;
 
 const connect = async () => {
-    const MONGODB_URL = config;
+    const MONGODB_URL = config.DB_CONNECTION_STRING;
 
-    if(database) return;
+    if (database) return;
 
-    mongoose.connect(MONGODB_URL)
-    .then((connection)=> {
-        database = connection;
-        console.log("Database has synced");
-        
-    })
-
-    .catch((err) =>{
-        console.log('DataBase is not connected properly');
-    });
+    try {
+        await mongoose.connect(MONGODB_URL, {
+            // These options are now default and can be removed
+            // useNewUrlParser: true,
+            // useUnifiedTopology: true,
+        });
+        database = mongoose.connection;
+        console.log("Database connected successfully");
+    } catch (err) {
+        console.error('Database connection error:', err.message);
+    }
 };
 
 export { connect };
