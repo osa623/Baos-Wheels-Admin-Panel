@@ -10,7 +10,7 @@ const connect = async () => {
 
     try {
         await mongoose.connect(MONGODB_URL, {
-            // These options are now default and can be removed
+            
             // useNewUrlParser: true,
             // useUnifiedTopology: true,
         });

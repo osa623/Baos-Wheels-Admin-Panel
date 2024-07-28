@@ -7,7 +7,7 @@ const config = require('../config/configs');
 const auth = require('../middleware/auth');
 
 // Register a new Admin
-router.post('/register', async (req, res) => {
+router.post('/reg', async (req, res) => {
     const { username, email, password } = req.body;
 
     try {

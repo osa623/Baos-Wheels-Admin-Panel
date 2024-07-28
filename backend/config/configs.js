@@ -6,7 +6,7 @@ dotenv.config();
 
 const config = {
     DB_CONNECTION_STRING: process.env.MONGODB_URL,
-    JWT_SECRET: process.env.JWT_SECRET ,
+    JWT_SECRET: process.env.JWT_SECRET 
 };
 
 export default config;

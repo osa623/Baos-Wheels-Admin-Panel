@@ -8,7 +8,7 @@ const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-const REGISTER_URL = '/Register';
+const REGISTER_URL = 'http://localhost:5000/api/users/reg';
 
 const RegisterPage = () => {
   const userRef = useRef();
@@ -65,7 +65,7 @@ const RegisterPage = () => {
     }
     try {
       const response = await axios.post(REGISTER_URL,
-        JSON.stringify({ user, email, pwd }),
+        JSON.stringify({ username:user, email, password:pwd }),
         {
           headers: { 'Content-Type': 'application/json' },
           withCredentials: true
@@ -98,7 +98,7 @@ const RegisterPage = () => {
           <h1 className='text-center font-russoone text-baseprimary'>Success!</h1>
         </section>
       ) : (
-        <section className='relative h-screen w-full bg-baseextra4'>
+        <section className='relative h-screen md:w-full  bg-baseextra4'>
           <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
           <div className='flex flex-col h-[20vh] w-full bg-baseextra4 items-center justify-center '>
             <div className='flex h-auto max-w-[40vw] bg-baseextra3 rounded-xl items-center justify-center cursor-default p-4'>
