@@ -1,30 +1,44 @@
-import React from 'react'
-
-//platform logo
-import bwlogo from '../assests/baoswheelslogo.png'
+import React from "react";
+import bwlogo from "../assests/baoswheelslogo.png";
 
 const Navbar = () => {
   return (
-    <div className='fixed flex w-full bg-secondary items-center justify-center space-x-8'>
-       
-        <div className='flex flex-col w-[15vw] h-auto items-center justify-center m-4'>
-                 <img src={bwlogo} alt=''/>
-        </div>
-
-        <div className='flex-row w-[40vw] h-auto items-center justify-center'>
-            <ul className='flex justify-center items-center text-primary gap-4 m-2 font-russoone text-xl space-x-3'>
-                <li className='hover:text-baseprimary cursor-pointer'>Dashboard</li>
-                <li className='hover:text-baseprimary cursor-pointer'>Reviews</li>
-                <li className='hover:text-baseprimary cursor-pointer'>Articles</li>
-                <li className='hover:text-baseprimary cursor-pointer'>Users</li>
-                <li className='hover:text-baseprimary cursor-pointer'>Logout</li>
-            </ul>
-        </div>
-        
-        
-      
+    <div className="navbar bg-secondary fixed top-0 left-0 w-full h-16 flex items-center justify-between px-4 shadow-md z-50">
+      <div className="navbar-start">
+        <img src={bwlogo} alt="Baos Wheels Logo" className="w-96 h-auto" />
+      </div>
+      <div className="navbar-center">
+        <ul className="menu menu-horizontal text-primary font-russoone text-2xl gap-12 ml-64">
+          <li className="hover:text-baseprimary">
+            <a href="#dashboard" className="hover:bg-transparent">
+              Dashboard
+            </a>
+          </li>
+          <li className="hover:text-baseprimary">
+            <a href="#reviews" className="hover:bg-transparent">
+              Reviews
+            </a>
+          </li>
+          <li className="hover:text-baseprimary">
+            <a href="#articles" className="hover:bg-transparent">
+              Articles
+            </a>
+          </li>
+          <li className="hover:text-baseprimary">
+            <a href="#users" className="hover:bg-transparent">
+              Users
+            </a>
+          </li>
+          <li className="hover:text-baseprimary">
+            <a href="#logout" className="hover:bg-transparent">
+              Logout
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div className="navbar-end">{/* Additional components or buttons */}</div>
     </div>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;
