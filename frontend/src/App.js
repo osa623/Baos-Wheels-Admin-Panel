@@ -25,7 +25,7 @@ function App() {
         <Route path="/AddReview" element={<AddReview />} />
         <Route path="/editReview/:id" element={<EditReview />} />
         <Route path="/editArticle/:id" element={<EditArticle />} />{" "}
-        {/* New route for EditArticle */}
+        
       </Routes>
     </Router>
   );
