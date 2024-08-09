@@ -123,7 +123,7 @@ router.put(
 );
 
 
-router.delete("/:id", async (req, res) => {
+router.delete("/delete/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const deletedArticle = await Article.findByIdAndDelete(id);

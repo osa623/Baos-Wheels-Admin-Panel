@@ -14,7 +14,7 @@ const slideVariants = {
 const Articles = () => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedArticle, setSelectedArticle] = useState(null); 
+  const [selectedArticle, setSelectedArticle] = useState(''); 
 
 
   useEffect(() => {
@@ -36,7 +36,7 @@ const Articles = () => {
   const deleteArticle = async (articleId) => {
     try {
       const response = await axios.delete(
-        `http://localhost:5000/api/articles/${articleId}`
+        `http://localhost:5000/api/articles/delete/${articleId}`
       );
 
       if (response.status === 200) {
@@ -123,7 +123,7 @@ const Articles = () => {
                           Delete
                         </button>
                         <Link
-                          to={`/editArticle/${article._id}`} // Ensures correct passing of _id
+                          to={`/edit/${article._id}`} // Ensures correct passing of _id
                           className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition duration-300 cursor-pointer z-20"
                         >
                           Edit

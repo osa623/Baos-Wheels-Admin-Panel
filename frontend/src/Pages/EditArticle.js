@@ -44,7 +44,7 @@ const EditArticle = () => {
     const fetchArticle = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/articles/${id}`
+          `http://localhost:5000/api/articles/edit/${id}`
         );
         setArticle(response.data);
         setSelectedFont({
@@ -92,12 +92,12 @@ const EditArticle = () => {
         images,
       };
       const response = await axios.put(
-        `http://localhost:5000/api/articles/${id}`,
+        `http://localhost:5000/api/articles/edit/${id}`,
         updatedArticle
       );
       if (response.status === 200) {
         alert("Article updated successfully!");
-        navigate("/articles");
+        navigate("/articles/edit");
       } else {
         throw new Error("Failed to update article");
       }
@@ -113,7 +113,7 @@ const EditArticle = () => {
 
   return (
     <div className="relative min-h-screen w-full bg-baseextra5 flex flex-col items-center">
-      <Navbar /> {/* Using Navbar for consistency */}
+      <Navbar />
       <div className="pt-16 flex flex-col items-center w-full p-4">
         <motion.div
           className="bg-baseextra4 shadow-lg rounded-lg p-8 w-full max-w-2xl relative border-2 border-baseprimary"

@@ -33,7 +33,7 @@ router.get("/", async (req, res) => {
     res.json(reviews);
   } catch (err) {
     console.error("Error fetching reviews:", err.message);
-    res.status(500).json({ message: "Server error while fetching reviews" });
+    res.status(500).json({ message: "Server eror while fetching reviews" });
   }
 });
 
