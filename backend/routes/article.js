@@ -2,18 +2,17 @@ import express from "express";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-import mongoose from "mongoose";
 import Article from "../models/Article.js";
 
 const router = express.Router();
 
-// Ensure the 'uploads/' directory exists
+
 const uploadDir = "uploads/";
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);
 }
 
-// Configure multer storage
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, uploadDir);
@@ -26,7 +25,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// Middleware to check for multer errors
+
 const checkMulterErrors = (err, req, res, next) => {
   if (err) {
     console.error("Multer error:", err);
@@ -35,9 +34,9 @@ const checkMulterErrors = (err, req, res, next) => {
   next();
 };
 
-// POST route to add a new article
+
 router.post(
-  "/",
+  "/add",
   upload.array("images", 10),
   checkMulterErrors,
   async (req, res) => {
@@ -67,8 +66,8 @@ router.post(
   }
 );
 
-// GET route to fetch all articles
-router.get("/", async (req, res) => {
+
+router.get("/get", async (req, res) => {
   try {
     const articles = await Article.find();
     res.json(articles);
@@ -78,8 +77,8 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET route to fetch a single article by ID
-router.get("/:id", async (req, res) => {
+
+router.get("/get/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const article = await Article.findById(id);
@@ -93,9 +92,9 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// PUT route to update an article by ID
+
 router.put(
-  "/:id",
+  "/insert/:id",
   upload.array("images", 10),
   checkMulterErrors,
   async (req, res) => {
@@ -123,7 +122,7 @@ router.put(
   }
 );
 
-// DELETE route to remove an article by ID
+
 router.delete("/:id", async (req, res) => {
   const { id } = req.params;
   try {

@@ -6,13 +6,13 @@ import { motion } from "framer-motion";
 import Select from "react-select";
 import Navbar from "../Components/Navbar";
 
-// Animation Variants
+
 const slideVariants = {
   hidden: { opacity: 0, x: -100 },
   visible: { opacity: 1, x: 0 },
 };
 
-// Font Options for react-select
+
 const fontOptions = [
   { value: "poppins", label: "Poppins" },
   { value: "russoone", label: "Russo One" },
@@ -23,7 +23,7 @@ const fontOptions = [
   { value: "kanit", label: "Kanit" },
 ];
 
-// Image transition options
+
 const transitionOptions = [
   { value: "fade", label: "Fade" },
   { value: "slide", label: "Slide" },
@@ -41,13 +41,13 @@ const AddArticle = () => {
   const [fontSize, setFontSize] = useState(16);
   const [transitionType, setTransitionType] = useState(transitionOptions[0]);
 
-  // Handle image upload
+
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
-    setImages(files); // Store file objects directly
+    setImages(files); 
   };
 
-  // Handle submit
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -57,14 +57,14 @@ const AddArticle = () => {
     formData.append("description", description);
     formData.append("author", author);
 
-    // Append files to FormData
+
     images.forEach((file) => {
       formData.append("images", file);
     });
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/articles",
+        "http://localhost:5000/api/articles/add",
         formData,
         {
           headers: {
@@ -79,7 +79,7 @@ const AddArticle = () => {
       setImages([]);
       setDescription("");
       setAuthor("");
-      navigate("/articles"); // Use navigate to redirect
+      navigate("/articles");
     } catch (err) {
       console.error(err);
       alert("Error creating article");

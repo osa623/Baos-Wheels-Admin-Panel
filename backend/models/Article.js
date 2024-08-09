@@ -1,35 +1,35 @@
 import mongoose from "mongoose";
 
-// Define the schema for articles
+
 const ArticleSchema = new mongoose.Schema(
   {
     createdDate: {
       type: Date,
-      default: Date.now, // Automatically set to the current date
+      default: Date.now,
     },
     title: {
       type: String,
-      required: true, // Title is mandatory
+      required: true,
     },
     category: {
       type: String,
-      required: true, // Category is mandatory
+      required: true, 
     },
     images: {
-      type: [String], // Store image paths as strings
-      default: [], // Default to an empty array if no images are provided
+      type: [String], 
+      default: [],
     },
     description: {
       type: String,
-      required: true, // Description is mandatory
+      required: true,
     },
     author: {
       type: String,
-      required: true, // Author is mandatory
+      required: true,
     },
   },
-  { timestamps: true } // Automatically manage createdAt and updatedAt fields
+  { timestamps: true }
 );
 
-// Export the model
+
 export default mongoose.model("Article", ArticleSchema);

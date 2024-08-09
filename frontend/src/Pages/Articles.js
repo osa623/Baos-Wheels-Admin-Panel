@@ -5,34 +5,34 @@ import Navbar from "../Components/Navbar";
 import axios from "axios";
 import arrowRight from "../assests/arrow-right.svg";
 
-// Animation Variants
+
 const slideVariants = {
   hidden: { opacity: 0, x: 100 },
   visible: { opacity: 1, x: 0 },
 };
 
 const Articles = () => {
-  const [articles, setArticles] = useState([]); // State to store articles
-  const [loading, setLoading] = useState(true); // State to manage loading
-  const [selectedArticle, setSelectedArticle] = useState(null); // State to store selected article
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedArticle, setSelectedArticle] = useState(null); 
 
-  // Fetch articles from the server when the component mounts
+
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/articles");
-        setArticles(response.data); // Update articles state with fetched data
+        const response = await axios.get("http://localhost:5000/api/articles/get");
+        setArticles(response.data);
       } catch (error) {
-        console.error("Error fetching articles:", error); // Log any errors
+        console.error("Error fetching articles:", error);
       } finally {
-        setLoading(false); // Set loading to false after fetch
+        setLoading(false); 
       }
     };
 
     fetchArticles();
   }, []);
 
-  // Function to delete an article
+
   const deleteArticle = async (articleId) => {
     try {
       const response = await axios.delete(
@@ -63,9 +63,9 @@ const Articles = () => {
     <div className="relative h-screen w-full bg-baseextra5">
       <Navbar />
       <div className="pt-16 flex flex-col h-full w-full p-4">
-        {/* Flex container for horizontal layout */}
+
         <div className="flex w-full gap-4 mb-4 relative">
-          {/* Articles Container */}
+
           <motion.div
             className="flex-1 flex flex-col items-center p-4 relative"
             variants={slideVariants}
@@ -74,7 +74,7 @@ const Articles = () => {
             transition={{ type: "spring", stiffness: 120, damping: 10 }}
           >
             <div className="w-full min-h-[600px] rounded-lg shadow-lg bg-baseextra4 flex flex-col items-center justify-start relative overflow-hidden border-2 border-baseprimary">
-              {/* Add Article Button */}
+
               <Link
                 to="/AddArticle"
                 className="absolute -left-1 bg-baseprimary text-white font-russoone text-lg py-4 px-16 rounded-br-lg transform transition-transform duration-300 hover:scale-105 hover:shadow-xl flex items-center justify-center z-10"
@@ -117,7 +117,7 @@ const Articles = () => {
                           className="px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition duration-300 cursor-pointer z-20"
                           onClick={(e) => {
                             e.stopPropagation();
-                            deleteArticle(article._id);
+                            deleteArticle(article._id)
                           }}
                         >
                           Delete
@@ -187,7 +187,7 @@ const Articles = () => {
             </div>
           </motion.div>
         </div>
-        {/* Arrow Icon with Link */}
+
         <Link to="/review" className="absolute bottom-4 right-4">
           <img
             src={arrowRight}
