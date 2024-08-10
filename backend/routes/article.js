@@ -3,7 +3,7 @@ import Article from "../models/Article.js";
 
 const router = express.Router();
 
-// Create a new article
+
 router.post("/add", async (req, res) => {
   const { title, category, description, author, images } = req.body;
 
@@ -15,7 +15,7 @@ router.post("/add", async (req, res) => {
     const newArticle = new Article({
       title,
       category,
-      images, // Array of image URLs
+      images,
       description,
       author,
     });
@@ -28,7 +28,7 @@ router.post("/add", async (req, res) => {
   }
 });
 
-// Get all articles
+
 router.get("/get", async (req, res) => {
   try {
     const articles = await Article.find();
@@ -39,7 +39,7 @@ router.get("/get", async (req, res) => {
   }
 });
 
-// Get a single article by ID
+
 router.get("/get/:id", async (req, res) => {
   const { id } = req.params;
   try {
@@ -54,7 +54,7 @@ router.get("/get/:id", async (req, res) => {
   }
 });
 
-// Update an article
+
 router.put("/insert/:id", async (req, res) => {
   const { id } = req.params;
   const { title, category, description, author, images } = req.body;
@@ -81,7 +81,7 @@ router.put("/insert/:id", async (req, res) => {
   }
 });
 
-// Delete an article
+
 router.delete("/delete/:id", async (req, res) => {
   const { id } = req.params;
   try {
