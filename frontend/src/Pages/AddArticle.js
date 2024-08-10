@@ -6,12 +6,10 @@ import { motion } from "framer-motion";
 import Select from "react-select";
 import Navbar from "../Components/Navbar";
 
-
 const slideVariants = {
   hidden: { opacity: 0, x: -100 },
   visible: { opacity: 1, x: 0 },
 };
-
 
 const fontOptions = [
   { value: "poppins", label: "Poppins" },
@@ -23,60 +21,52 @@ const fontOptions = [
   { value: "kanit", label: "Kanit" },
 ];
 
-
-const transitionOptions = [
-  { value: "fade", label: "Fade" },
-  { value: "slide", label: "Slide" },
-  { value: "zoom", label: "Zoom" },
-];
-
 const AddArticle = () => {
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
-  const [images, setImages] = useState([]);
+  const [imageUrls, setImageUrls] = useState([""]); // Updated state to manage image URLs
   const [description, setDescription] = useState("");
   const [author, setAuthor] = useState("");
   const [selectedFont, setSelectedFont] = useState(fontOptions[0]);
   const [fontSize, setFontSize] = useState(16);
-  const [transitionType, setTransitionType] = useState(transitionOptions[0]);
 
-
-  const handleImageUpload = (e) => {
-    const files = Array.from(e.target.files);
-    setImages(files); 
+  const handleImageUrlChange = (index, value) => {
+    const newImageUrls = [...imageUrls];
+    newImageUrls[index] = value;
+    setImageUrls(newImageUrls);
   };
 
+  const addImageUrlField = () => {
+    setImageUrls([...imageUrls, ""]);
+  };
+
+  const removeImageUrlField = (index) => {
+    const newImageUrls = imageUrls.filter((_, i) => i !== index);
+    setImageUrls(newImageUrls);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("category", category);
-    formData.append("description", description);
-    formData.append("author", author);
-
-
-    images.forEach((file) => {
-      formData.append("images", file);
-    });
+    const articleData = {
+      title,
+      category,
+      description,
+      author,
+      images: imageUrls,
+    };
 
     try {
       const response = await axios.post(
         "http://localhost:5000/api/articles/add",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+        articleData
       );
       console.log(response.data);
       alert("Article created successfully!");
       setTitle("");
       setCategory("");
-      setImages([]);
+      setImageUrls([""]); // Reset to a single empty field
       setDescription("");
       setAuthor("");
       navigate("/articles");
@@ -85,8 +75,6 @@ const AddArticle = () => {
       alert("Error creating article");
     }
   };
-
-  const imagePreviews = images.map((file, index) => URL.createObjectURL(file));
 
   return (
     <div className="relative min-h-screen w-full bg-baseextra5 flex flex-col items-center">
@@ -131,15 +119,34 @@ const AddArticle = () => {
             </div>
             <div className="mb-4">
               <label className="block text-white font-semibold mb-2">
-                Images
+                Image URLs
               </label>
-              <input
-                type="file"
-                multiple
-                accept="image/*"
-                onChange={handleImageUpload}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
-              />
+              {imageUrls.map((url, index) => (
+                <div key={index} className="flex items-center mb-2">
+                  <input
+                    type="text"
+                    value={url}
+                    onChange={(e) => handleImageUrlChange(index, e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                    placeholder="Enter image URL"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeImageUrlField(index)}
+                    className="ml-2 px-2 py-1 bg-red-500 text-white rounded"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={addImageUrlField}
+                className="mt-2 px-4 py-2 bg-green-500 text-white rounded"
+              >
+                Add Image URL
+              </button>
             </div>
             <div className="mb-4">
               <label className="block text-white font-semibold mb-2">
@@ -194,17 +201,6 @@ const AddArticle = () => {
                 required
               />
             </div>
-            <div className="mb-4">
-              <label className="block text-white font-semibold mb-2">
-                Image Transition
-              </label>
-              <Select
-                value={transitionType}
-                onChange={(option) => setTransitionType(option)}
-                options={transitionOptions}
-                className="w-full"
-              />
-            </div>
             <div className="text-center">
               <button
                 type="submit"
@@ -214,26 +210,6 @@ const AddArticle = () => {
               </button>
             </div>
           </form>
-          {imagePreviews.length > 0 && (
-            <div className="mt-6">
-              <h3 className="text-white font-semibold mb-2">Image Previews:</h3>
-              <motion.div
-                className="grid grid-cols-3 gap-2"
-                initial="hidden"
-                animate="visible"
-                transition={{ type: "spring", stiffness: 120, damping: 10 }}
-              >
-                {imagePreviews.map((img, index) => (
-                  <img
-                    key={index}
-                    src={img}
-                    alt={`Preview ${index + 1}`}
-                    className={`w-full h-32 object-cover rounded-lg shadow-md transition-${transitionType.value}`}
-                  />
-                ))}
-              </motion.div>
-            </div>
-          )}
         </motion.div>
       </div>
     </div>
