@@ -18,7 +18,7 @@ const Review = () => {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/reviews");
+        const response = await axios.get("http://localhost:5000/api/reviews/get");
         setReviews(response.data);
       } catch (error) {
         console.error("Error fetching reviews:", error);
@@ -33,7 +33,7 @@ const Review = () => {
   const deleteReview = async (reviewId) => {
     try {
       const response = await axios.delete(
-        `http://localhost:5000/api/reviews/${reviewId}`
+        `http://localhost:5000/api/reviews/get/${reviewId}`
       );
 
       if (response.status === 200) {
@@ -113,7 +113,7 @@ const Review = () => {
                           Delete
                         </button>
                         <Link
-                          to={`/editReview/${review._id}`} // Ensures correct passing of _id
+                          to={`/editReview/${review._id}`}
                           className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition duration-300 cursor-pointer z-20"
                         >
                           Edit
@@ -157,7 +157,7 @@ const Review = () => {
                         <img
                           key={index}
                           src={img}
-                          alt={`Review image ${index + 1}`}
+                          alt={selectedReview.title}
                           className="w-full h-32 object-cover rounded-lg"
                         />
                       ))}
@@ -174,7 +174,6 @@ const Review = () => {
             </div>
           </motion.div>
         </div>
-        {/* Arrow Icon with Link */}
         <Link to="/review" className="absolute bottom-4 right-4">
           <img
             src={arrowRight}

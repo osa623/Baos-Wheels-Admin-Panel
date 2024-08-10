@@ -167,12 +167,10 @@ const Articles = () => {
                     </p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       {selectedArticle.images.map((img, index) => (
-                        <img
-                          key={index}
+                        <img key={index}
                           src={img}
-                          alt={`Article image ${index + 1}`}
-                          className="w-full h-32 object-cover rounded-lg"
-                        />
+                          alt={selectedArticle.title}
+                          className="w-full h-32 object-cover rounded-lg"/>
                       ))}
                     </div>
                     <button

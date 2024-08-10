@@ -24,34 +24,32 @@ const fontOptions = [
 ];
 
 // Image transition options
-const transitionOptions = [
-  { value: "fade", label: "Fade" },
-  { value: "slide", label: "Slide" },
-  { value: "zoom", label: "Zoom" },
-];
-
 const AddReview = () => {
   const navigate = useNavigate(); // Use useNavigate instead of useHistory
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [brand, setBrand] = useState("");
-  const [images, setImages] = useState([]);
+  const [imageUrls, setImageUrls] = useState([]);
   const [description, setDescription] = useState("");
   const [author, setAuthor] = useState("");
   const [selectedFont, setSelectedFont] = useState(fontOptions[0]);
-  const [fontSize, setFontSize] = useState(16);
-  const [transitionType, setTransitionType] = useState(transitionOptions[0]);
+  const [fontSize, setFontSize] = useState(16)
 
-  // Handle image upload
-  const handleImageUpload = (e) => {
-    const files = e.target.files;
-    const imageUrls = [];
-    for (let i = 0; i < files.length; i++) {
-      imageUrls.push(URL.createObjectURL(files[i]));
-    }
-    setImages(imageUrls);
+
+  const handleImageUrlChange = (index, value) => {
+    const newImageUrls = [...imageUrls];
+    newImageUrls[index] = value;
+    setImageUrls(newImageUrls);
   };
 
+  const addImageUrlField = () => {
+    setImageUrls([...imageUrls, ""]);
+  };
+
+  const removeImageUrlField = (index) => {
+    const newImageUrls = imageUrls.filter((_, i) => i !== index);
+    setImageUrls(newImageUrls);
+  };
   // Handle submit
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -60,20 +58,19 @@ const AddReview = () => {
         title,
         category,
         brand,
-        images,
+        images : imageUrls,
         description,
         author,
         font: selectedFont.value,
         fontSize,
-        transitionType: transitionType.value,
       };
       const response = await axios.post(
-        "http://localhost:5000/api/reviews",
+        "http://localhost:5000/api/reviews/add",
         newReview
       );
       console.log(response.data);
       alert("Review added successfully!");
-      navigate("/reviews"); // Use navigate instead of history.push
+      navigate("/review");
     } catch (err) {
       console.error(err);
       alert("Error adding review");
@@ -82,7 +79,7 @@ const AddReview = () => {
 
   return (
     <div className="relative min-h-screen w-full bg-baseextra5 flex flex-col items-center">
-      <Navbar /> {/* Using Navbar for consistency */}
+      <Navbar />
       <div className="pt-16 flex flex-col items-center w-full p-4">
         <motion.div
           className="bg-baseextra4 shadow-lg rounded-lg p-8 w-full max-w-2xl relative border-2 border-baseprimary"
@@ -135,15 +132,34 @@ const AddReview = () => {
             </div>
             <div className="mb-4">
               <label className="block text-white font-semibold mb-2">
-                Images
+                Image URLs
               </label>
-              <input
-                type="file"
-                multiple
-                accept="image/*"
-                onChange={handleImageUpload}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
-              />
+              {imageUrls.map((url, index) => (
+                <div key={index} className="flex items-center mb-2">
+                  <input
+                    type="text"
+                    value={url}
+                    onChange={(e) => handleImageUrlChange(index, e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                    placeholder="Enter image URL"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeImageUrlField(index)}
+                    className="ml-2 px-2 py-1 bg-red-500 text-white rounded"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={addImageUrlField}
+                className="mt-2 px-4 py-2 bg-green-500 text-white rounded"
+              >
+                Add Image URL
+              </button>
             </div>
             <div className="mb-4">
               <label className="block text-white font-semibold mb-2">
@@ -198,17 +214,6 @@ const AddReview = () => {
                 required
               />
             </div>
-            <div className="mb-4">
-              <label className="block text-white font-semibold mb-2">
-                Image Transition
-              </label>
-              <Select
-                value={transitionType}
-                onChange={(option) => setTransitionType(option)}
-                options={transitionOptions}
-                className="w-full"
-              />
-            </div>
             <div className="text-center">
               <button
                 type="submit"
@@ -218,26 +223,6 @@ const AddReview = () => {
               </button>
             </div>
           </form>
-          {images.length > 0 && (
-            <div className="mt-6">
-              <h3 className="text-white font-semibold mb-2">Image Previews:</h3>
-              <motion.div
-                className="grid grid-cols-3 gap-2"
-                initial="hidden"
-                animate="visible"
-                transition={{ type: "spring", stiffness: 120, damping: 10 }}
-              >
-                {images.map((img, index) => (
-                  <img
-                    key={index}
-                    src={img}
-                    alt={`Preview ${index + 1}`}
-                    className="w-full h-32 object-cover rounded-lg shadow-md"
-                  />
-                ))}
-              </motion.div>
-            </div>
-          )}
         </motion.div>
       </div>
     </div>

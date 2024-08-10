@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const ReviewSchema = new mongoose.Schema(
   {
-    createdDate: {
+    date: {
       type: Date,
       default: Date.now,
     },
@@ -19,7 +19,7 @@ const ReviewSchema = new mongoose.Schema(
       required: true,
     },
     images: {
-      type: [String], // Array of image URLs or file paths
+      type: [String],
       default: [],
     },
     description: {

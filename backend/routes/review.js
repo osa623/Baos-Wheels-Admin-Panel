@@ -1,12 +1,16 @@
 import express from "express";
-import mongoose from "mongoose"; // Import mongoose
-import Review from "../models/Review.js"; // Update this path if necessary
+import mongoose from "mongoose";
+import Review from "../models/Review.js"; 
 
 const router = express.Router();
 
-// Create a new review
-router.post("/", async (req, res) => {
-  const { title, category, brand, images, description, author } = req.body;
+
+router.post("/add", async (req, res) => {
+  const {title, category, brand, images, description, author } = req.body;
+
+  if(!images || images.length == 0){
+    return res.status(400).json({ error: "No image URLs provided" });
+  }
 
   try {
     const newReview = new Review({
@@ -26,8 +30,8 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Get all reviews
-router.get("/", async (req, res) => {
+
+router.get("/get", async (req, res) => {
   try {
     const reviews = await Review.find();
     res.json(reviews);
@@ -37,8 +41,8 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Get a review by ID
-router.get("/:id", async (req, res) => {
+
+router.get("/get/:id", async (req, res) => {
   try {
     const review = await Review.findById(req.params.id);
 
@@ -53,8 +57,8 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// Update a review
-router.put("/:id", async (req, res) => {
+
+router.put("/update/:id", async (req, res) => {
   const { title, category, brand, images, description, author } = req.body;
 
   try {
@@ -64,6 +68,7 @@ router.put("/:id", async (req, res) => {
       return res.status(404).json({ msg: "Review not found" });
     }
 
+    review.date = date || review.date;
     review.title = title || review.title;
     review.category = category || review.category;
     review.brand = brand || review.brand;
@@ -79,17 +84,17 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// Delete a review
-router.delete("/:id", async (req, res) => {
+
+router.delete("/delete/:id", async (req, res) => {
   try {
     console.log(`Delete request received for ID: ${req.params.id}`);
 
-    // Check if the ID is valid
+
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
       return res.status(400).json({ msg: "Invalid review ID" });
     }
 
-    // Attempt to delete the review
+
     const result = await Review.deleteOne({ _id: req.params.id });
 
     if (result.deletedCount === 0) {

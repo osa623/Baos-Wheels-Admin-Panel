@@ -5,7 +5,7 @@ const router = express.Router();
 
 
 router.post("/add", async (req, res) => {
-  const { title, category, description, author, images } = req.body;
+  const {title, category, description, author, images} = req.body;
 
   if (!images || images.length === 0) {
     return res.status(400).json({ error: "No image URLs provided" });
@@ -92,6 +92,7 @@ router.delete("/delete/:id", async (req, res) => {
     res.json({ message: "Article deleted successfully" });
   } catch (err) {
     console.error("Error deleting article:", err.message);
+
     res.status(500).send("Server error");
   }
 });
