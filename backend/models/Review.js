@@ -3,8 +3,8 @@ import mongoose from "mongoose";
 const ReviewSchema = new mongoose.Schema(
   {
     date: {
-      type: Date,
-      default: Date.now,
+      type: String,
+      default: new Date().toISOString().slice(2, 10).replace(/-/g, '/'),
     },
     title: {
       type: String,
@@ -22,7 +22,27 @@ const ReviewSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
-    description: {
+    overview: {
+      type: String,
+      required: true,
+    },
+    exterior: {
+      type: String,
+      required: true,
+    },
+    interior: {
+      type: String,
+      required: true,
+    },
+    performance: {
+      type: String,
+      required: true,
+    },
+    safety: {
+      type: String,
+      required: true,
+    },
+    price: {
       type: String,
       required: true,
     },

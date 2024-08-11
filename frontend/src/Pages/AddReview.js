@@ -30,7 +30,12 @@ const AddReview = () => {
   const [category, setCategory] = useState("");
   const [brand, setBrand] = useState("");
   const [imageUrls, setImageUrls] = useState([]);
-  const [description, setDescription] = useState("");
+  const [overview, setOverview] = useState("");
+  const [exterior, setExterior] = useState("");
+  const [interior, setInterior] = useState("");
+  const [performance, setPerformance] = useState("");
+  const [safety, setSafety] = useState("");
+  const [price, setPrice] = useState("");
   const [author, setAuthor] = useState("");
   const [selectedFont, setSelectedFont] = useState(fontOptions[0]);
   const [fontSize, setFontSize] = useState(16)
@@ -59,7 +64,12 @@ const AddReview = () => {
         category,
         brand,
         images : imageUrls,
-        description,
+        overview,
+        exterior,
+        interior,
+        performance,
+        safety,
+        price,
         author,
         font: selectedFont.value,
         fontSize,
@@ -70,7 +80,7 @@ const AddReview = () => {
       );
       console.log(response.data);
       alert("Review added successfully!");
-      navigate("/review");
+      navigate("/reviews");
     } catch (err) {
       console.error(err);
       alert("Error adding review");
@@ -163,11 +173,91 @@ const AddReview = () => {
             </div>
             <div className="mb-4">
               <label className="block text-white font-semibold mb-2">
-                Description
+                Overview:
               </label>
               <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                value={overview}
+                onChange={(e) => setOverview(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                rows="5"
+                style={{
+                  fontFamily: selectedFont.value,
+                  fontSize: `${fontSize}px`,
+                }}
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-white font-semibold mb-2">
+                Exterior:
+              </label>
+              <textarea
+                value={exterior}
+                onChange={(e) => setExterior(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                rows="5"
+                style={{
+                  fontFamily: selectedFont.value,
+                  fontSize: `${fontSize}px`,
+                }}
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-white font-semibold mb-2">
+                Interior:
+              </label>
+              <textarea
+                value={interior}
+                onChange={(e) => setInterior(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                rows="5"
+                style={{
+                  fontFamily: selectedFont.value,
+                  fontSize: `${fontSize}px`,
+                }}
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-white font-semibold mb-2">
+                Performance:
+              </label>
+              <textarea
+                value={performance}
+                onChange={(e) => setPerformance(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                rows="5"
+                style={{
+                  fontFamily: selectedFont.value,
+                  fontSize: `${fontSize}px`,
+                }}
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-white font-semibold mb-2">
+                Safety:
+              </label>
+              <textarea
+                value={safety}
+                onChange={(e) => setSafety(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                rows="5"
+                style={{
+                  fontFamily: selectedFont.value,
+                  fontSize: `${fontSize}px`,
+                }}
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-white font-semibold mb-2">
+                Price:
+              </label>
+              <textarea
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
                 rows="5"
                 style={{
