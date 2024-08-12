@@ -36,6 +36,25 @@ router.post("/add", async (req, res) => {
 });
 
 
+
+{/* fetch only related content */}
+
+router.get("/brand/:brand", async (req, res) => {
+  try {
+    const { brand } = req.params;
+    const reviews = await Review.find({ brand });
+
+    if (reviews.length === 0) {
+      return res.status(404).json({ error: "No reviews found for this brand" });
+    }
+
+    res.json(reviews);
+  } catch (err) {
+    console.error("Error fetching reviews by brand:", err.message);
+    res.status(500).send("Server error");
+  }
+});
+
 router.get("/get", async (req, res) => {
   try {
     const reviews = await Review.find();
