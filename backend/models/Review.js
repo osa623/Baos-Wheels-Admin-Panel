@@ -46,6 +46,30 @@ const ReviewSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    engine: {
+      type: String,
+      required: true,
+    },
+    drivetrain: {
+      type: String,
+      required: true,
+    },
+    transmission: {
+      type: String,
+      required: true,
+    },
+    fuelEconomy: {
+      type: String,
+      required: true,
+    },
+    seatingCapacity: {
+      type: String,
+      required: true,
+    },
+    singleprice: {
+      type: String,
+      required: true,
+    },
     author: {
       type: String,
       required: true,

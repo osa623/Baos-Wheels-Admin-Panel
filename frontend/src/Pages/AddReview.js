@@ -36,6 +36,12 @@ const AddReview = () => {
   const [performance, setPerformance] = useState("");
   const [safety, setSafety] = useState("");
   const [price, setPrice] = useState("");
+  const [engine, setEngine] = useState("");
+  const [drivetrain, setDrivetrain] = useState("");
+  const [transmission, setTransmission] = useState("");
+  const [fuelEconomy, setFueleconomy] = useState("");
+  const [seatingCapacity, setSeatingCapacity] = useState("");
+  const [singleprice, setSingleprice] = useState("");
   const [author, setAuthor] = useState("");
   const [selectedFont, setSelectedFont] = useState(fontOptions[0]);
   const [fontSize, setFontSize] = useState(16)
@@ -267,6 +273,78 @@ const AddReview = () => {
                 required
               />
             </div>
+
+            <div className="grid grid-cols-2 h-auto w-auto gap-3 items-center">
+
+
+            <label className="block text-white font-semibold mb-2">
+                Engine
+              </label>
+              <input
+                type="text"
+                value={engine}
+                onChange={(e) => setEngine(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                required
+              />
+
+             <label className="block text-white font-semibold mb-2">
+                Drivetrain
+              </label>
+              <input
+                type="text"
+                value={drivetrain}
+                onChange={(e) => setDrivetrain(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                required
+              />
+
+             <label className="block text-white font-semibold mb-2">
+                Transmission
+              </label>
+              <input
+                type="text"
+                value={transmission}
+                onChange={(e) => setTransmission(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                required
+              />
+
+            <label className="block text-white font-semibold mb-2">
+                fuelEconomy
+              </label>
+              <input
+                type="text"
+                value={fuelEconomy}
+                onChange={(e) => setFueleconomy(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                required
+              />
+
+              <label className="block text-white font-semibold mb-2">
+                seatingCapacity
+              </label>
+              <input
+                type="text"
+                value={seatingCapacity}
+                onChange={(e) => setSeatingCapacity(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                required
+              />
+
+             <label className="block text-white font-semibold mb-2">
+                Single Price
+              </label>
+              <input
+                type="text"
+                value={singleprice}
+                onChange={(e) => setSingleprice(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                required
+              />
+
+            </div>
+
             <div className="mb-4">
               <label className="block text-white font-semibold mb-2">
                 Author
@@ -279,6 +357,7 @@ const AddReview = () => {
                 required
               />
             </div>
+
             <div className="mb-4">
               <label className="block text-white font-semibold mb-2">
                 Font Style
