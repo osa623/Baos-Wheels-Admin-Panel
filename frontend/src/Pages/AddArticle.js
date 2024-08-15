@@ -15,7 +15,7 @@ const fontOptions = [
   { value: "poppins", label: "Poppins" },
   { value: "russoone", label: "Russo One" },
   { value: "kdamThmorPro", label: "Kdam Thmor Pro" },
-  { value: "lorniasolid", label: "Londrina Solid" },
+  { value: "londrinasolid", label: "Londrina Solid" },
   { value: "bebasneue", label: "Bebas Neue" },
   { value: "bricolagegrotesque", label: "Bricolage Grotesque" },
   { value: "kanit", label: "Kanit" },
@@ -25,8 +25,9 @@ const AddArticle = () => {
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
-  const [imageUrls, setImageUrls] = useState([""]); // Updated state to manage image URLs
-  const [description, setDescription] = useState("");
+  const [imageUrls, setImageUrls] = useState([""]);
+  const [subTitleUrls, setSubTitleUrls] = useState([""]);
+  const [descriptionUrls, setDescriptionUrls] = useState([""]);
   const [author, setAuthor] = useState("");
   const [selectedFont, setSelectedFont] = useState(fontOptions[0]);
   const [fontSize, setFontSize] = useState(16);
@@ -37,13 +38,43 @@ const AddArticle = () => {
     setImageUrls(newImageUrls);
   };
 
+  const handleSubtitleChange = (index, value) => {
+    const newSubTitleUrls = [...subTitleUrls];
+    newSubTitleUrls[index] = value;
+    setSubTitleUrls(newSubTitleUrls);
+  };
+
+  const handleDescriptionChange = (index, value) => {
+    const newDescriptionUrls = [...descriptionUrls];
+    newDescriptionUrls[index] = value;
+    setDescriptionUrls(newDescriptionUrls);
+  };
+
   const addImageUrlField = () => {
     setImageUrls([...imageUrls, ""]);
+  };
+
+  const addSubtitleField = () => {
+    setSubTitleUrls([...subTitleUrls, ""]);
+  };
+
+  const addDescriptionField = () => {
+    setDescriptionUrls([...descriptionUrls, ""]);
   };
 
   const removeImageUrlField = (index) => {
     const newImageUrls = imageUrls.filter((_, i) => i !== index);
     setImageUrls(newImageUrls);
+  };
+
+  const removeSubtitleField = (index) => {
+    const newSubTitleUrls = subTitleUrls.filter((_, i) => i !== index);
+    setSubTitleUrls(newSubTitleUrls);
+  };
+
+  const removeDescriptionField = (index) => {
+    const newDescriptionUrls = descriptionUrls.filter((_, i) => i !== index);
+    setDescriptionUrls(newDescriptionUrls);
   };
 
   const handleSubmit = async (e) => {
@@ -52,7 +83,8 @@ const AddArticle = () => {
     const articleData = {
       title,
       category,
-      description,
+      subtitle: subTitleUrls,
+      description: descriptionUrls,
       author,
       images: imageUrls,
     };
@@ -66,8 +98,9 @@ const AddArticle = () => {
       alert("Article created successfully!");
       setTitle("");
       setCategory("");
-      setImageUrls([""]); // Reset to a single empty field
-      setDescription("");
+      setImageUrls([""]);
+      setSubTitleUrls([""]);
+      setDescriptionUrls([""]);
       setAuthor("");
       navigate("/articles");
     } catch (err) {
@@ -150,19 +183,65 @@ const AddArticle = () => {
             </div>
             <div className="mb-4">
               <label className="block text-white font-semibold mb-2">
-                Description
+                Titles
               </label>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
-                rows="5"
-                style={{
-                  fontFamily: selectedFont.value,
-                  fontSize: `${fontSize}px`,
-                }}
-                required
-              />
+              {subTitleUrls.map((subtitle, index) => (
+                <div key={index} className="flex items-center mb-2">
+                  <input
+                    type="text"
+                    value={subtitle}
+                    onChange={(e) => handleSubtitleChange(index, e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                    placeholder="Enter the Title"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeSubtitleField(index)}
+                    className="ml-2 px-2 py-1 bg-red-500 text-white rounded"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={addSubtitleField}
+                className="mt-2 px-4 py-2 bg-green-500 text-white rounded"
+              >
+                Add Title
+              </button>
+            </div>
+            <div className="mb-4">
+              <label className="block text-white font-semibold mb-2">
+                Descriptions
+              </label>
+              {descriptionUrls.map((description, index) => (
+                <div key={index} className="flex items-center mb-2">
+                  <textarea
+                    value={description}
+                    onChange={(e) => handleDescriptionChange(index, e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                    rows="5"
+                    placeholder="Enter the Description"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeDescriptionField(index)}
+                    className="ml-2 px-2 py-1 bg-red-500 text-white rounded"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={addDescriptionField}
+                className="mt-2 px-4 py-2 bg-green-500 text-white rounded"
+              >
+                Add Description
+              </button>
             </div>
             <div className="mb-4">
               <label className="block text-white font-semibold mb-2">
@@ -178,33 +257,32 @@ const AddArticle = () => {
             </div>
             <div className="mb-4">
               <label className="block text-white font-semibold mb-2">
-                Font Style
+                Font Family
               </label>
               <Select
                 value={selectedFont}
-                onChange={(option) => setSelectedFont(option)}
+                onChange={setSelectedFont}
                 options={fontOptions}
+                isSearchable
                 className="w-full"
               />
             </div>
             <div className="mb-4">
               <label className="block text-white font-semibold mb-2">
-                Font Size (px)
+                Font Size
               </label>
               <input
                 type="number"
                 value={fontSize}
                 onChange={(e) => setFontSize(e.target.value)}
-                min="12"
-                max="48"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
                 required
               />
             </div>
-            <div className="text-center">
+            <div className="mt-8 text-center">
               <button
                 type="submit"
-                className="px-6 py-2 bg-baseprimary text-white font-bold rounded-lg hover:bg-indigo-600 focus:outline-none transition duration-200"
+                className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-200"
               >
                 Create Article
               </button>
