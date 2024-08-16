@@ -56,7 +56,7 @@ router.get("/get/:id", async (req, res) => {
 });
 
 
-router.put("/insert/:id", async (req, res) => {
+router.put("/update/:id", async (req, res) => {
   const { id } = req.params;
   const { title, category, description, author, images } = req.body;
 

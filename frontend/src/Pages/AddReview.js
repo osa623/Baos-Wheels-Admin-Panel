@@ -92,7 +92,7 @@ const AddReview = () => {
       );
       console.log(response.data);
       alert("Review added successfully!");
-      navigate("/reviews");
+      navigate("/review");
     } catch (err) {
       console.error(err);
       alert("Error adding review");
