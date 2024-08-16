@@ -29,6 +29,12 @@ const ArticleSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+
+    summary:{
+      type:String,
+      required: true,
+    },
+
     author: {
       type: String,
       required: true,

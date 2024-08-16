@@ -5,7 +5,7 @@ const router = express.Router();
 
 
 router.post("/add", async (req, res) => {
-  const {title, category, subtitle, description, author, images} = req.body;
+  const {title, category, subtitle, description,summary, author, images} = req.body;
 
   if (!images || images.length === 0) {
     return res.status(400).json({ error: "No image URLs provided" });
@@ -18,6 +18,7 @@ router.post("/add", async (req, res) => {
       images,
       subtitle,
       description,
+      summary,
       author,
     });
 

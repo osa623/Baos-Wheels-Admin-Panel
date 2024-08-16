@@ -28,6 +28,7 @@ const AddArticle = () => {
   const [imageUrls, setImageUrls] = useState([""]);
   const [subTitleUrls, setSubTitleUrls] = useState([""]);
   const [descriptionUrls, setDescriptionUrls] = useState([""]);
+  const [summary, setSummary] = useState("");
   const [author, setAuthor] = useState("");
   const [selectedFont, setSelectedFont] = useState(fontOptions[0]);
   const [fontSize, setFontSize] = useState(16);
@@ -85,6 +86,7 @@ const AddArticle = () => {
       category,
       subtitle: subTitleUrls,
       description: descriptionUrls,
+      summary,
       author,
       images: imageUrls,
     };
@@ -101,6 +103,7 @@ const AddArticle = () => {
       setImageUrls([""]);
       setSubTitleUrls([""]);
       setDescriptionUrls([""]);
+      setSummary("");
       setAuthor("");
       navigate("/articles");
     } catch (err) {
@@ -243,6 +246,25 @@ const AddArticle = () => {
                 Add Description
               </button>
             </div>
+
+            <div className="mb-4">
+              <label className="block text-white font-semibold mb-2">
+                Summary:
+              </label>
+              <textarea
+                value={summary}
+                onChange={(e) => setSummary(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                rows="5"
+                style={{
+                  fontFamily: selectedFont.value,
+                  fontSize: `${fontSize}px`,
+                }}
+                required
+              />
+            </div>
+
+
             <div className="mb-4">
               <label className="block text-white font-semibold mb-2">
                 Author
