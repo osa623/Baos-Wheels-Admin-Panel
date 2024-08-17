@@ -1,14 +1,14 @@
 import express from "express";
 import mongoose from "mongoose";
-import Review from "../models/Review.js"; 
+import Review from "../models/Review.js";
 
 const router = express.Router();
 
-
+// Create a new review
 router.post("/add", async (req, res) => {
-  const {title, category, brand, images, overview, exterior, interior, performance, safety, price, engine, drivetrain, transmission, fuelEconomy, seatingCapacity, singleprice, author } = req.body;
+  const { title, category, brand, images, overview, exterior, interior, performance, safety, price, engine, drivetrain, transmission, fuelEconomy, seatingCapacity, singleprice, author } = req.body;
 
-  if(!images || images.length == 0){
+  if (!images || images.length === 0) {
     return res.status(400).json({ error: "No image URLs provided" });
   }
 
@@ -23,13 +23,13 @@ router.post("/add", async (req, res) => {
       interior,
       performance,
       safety,
-      price, 
+      price,
       engine,
       drivetrain,
       transmission,
       fuelEconomy,
       seatingCapacity,
-      singleprice, 
+      singleprice,
       author,
     });
 
@@ -41,14 +41,12 @@ router.post("/add", async (req, res) => {
   }
 });
 
-
-
-{/* fetch only related content */}
-
+// Fetch reviews by brand
 router.get("/brand/:brand", async (req, res) => {
   try {
     const { brand } = req.params;
-    const reviews = await Review.find({ brand });
+    console.log("Fetching reviews for brand:", brand);
+    const reviews = await Review.find({ brand: { $regex: new RegExp(`^${brand}$`, 'i') } });
 
     if (reviews.length === 0) {
       return res.status(404).json({ error: "No reviews found for this brand" });
@@ -57,43 +55,39 @@ router.get("/brand/:brand", async (req, res) => {
     res.json(reviews);
   } catch (err) {
     console.error("Error fetching reviews by brand:", err.message);
-    res.status(500).send("Server error");
+    res.status(500).json({ message: "Server error while fetching reviews" });
   }
 });
 
-{/* fetch only related content */}
-
+// Fetch reviews by category
 router.get("/category/:category", async (req, res) => {
   try {
-
-    const {category} = req.params;
-    const reviews = await Review.find({category});
+    const { category } = req.params;
+    const reviews = await Review.find({ category });
 
     if (reviews.length === 0) {
-      return res.status(404).json({ error: "No reviews found for this brand" });
+      return res.status(404).json({ error: "No reviews found for this category" });
     }
 
     res.json(reviews);
-
-  } catch (error) {
-    
-    console.error("Error fetching reviews by brand:", err.message);
-    res.status(500).send("Server error");
-
+  } catch (err) {
+    console.error("Error fetching reviews by category:", err.message);
+    res.status(500).json({ message: "Server error while fetching reviews" });
   }
-})
+});
 
+// Fetch all reviews
 router.get("/get", async (req, res) => {
   try {
     const reviews = await Review.find();
     res.json(reviews);
   } catch (err) {
     console.error("Error fetching reviews:", err.message);
-    res.status(500).json({ message: "Server eror while fetching reviews" });
+    res.status(500).json({ message: "Server error while fetching reviews" });
   }
 });
 
-
+// Fetch review by ID
 router.get("/get/:id", async (req, res) => {
   try {
     const review = await Review.findById(req.params.id);
@@ -109,9 +103,9 @@ router.get("/get/:id", async (req, res) => {
   }
 });
 
-
+// Update review by ID
 router.put("/update/:id", async (req, res) => {
-  const { title, category, brand, images, description, author } = req.body;
+  const { title, category, brand, images, overview, exterior, interior, performance, safety, price, engine, drivetrain, transmission, fuelEconomy, seatingCapacity, singleprice, author } = req.body;
 
   try {
     const review = await Review.findById(req.params.id);
@@ -120,12 +114,22 @@ router.put("/update/:id", async (req, res) => {
       return res.status(404).json({ msg: "Review not found" });
     }
 
-    review.date = date || review.date;
     review.title = title || review.title;
     review.category = category || review.category;
     review.brand = brand || review.brand;
     review.images = images || review.images;
-    review.description = description || review.description;
+    review.overview = overview || review.overview;
+    review.exterior = exterior || review.exterior;
+    review.interior = interior || review.interior;
+    review.performance = performance || review.performance;
+    review.safety = safety || review.safety;
+    review.price = price || review.price;
+    review.engine = engine || review.engine;
+    review.drivetrain = drivetrain || review.drivetrain;
+    review.transmission = transmission || review.transmission;
+    review.fuelEconomy = fuelEconomy || review.fuelEconomy;
+    review.seatingCapacity = seatingCapacity || review.seatingCapacity;
+    review.singleprice = singleprice || review.singleprice;
     review.author = author || review.author;
 
     await review.save();
@@ -136,16 +140,14 @@ router.put("/update/:id", async (req, res) => {
   }
 });
 
-
+// Delete review by ID
 router.delete("/delete/:id", async (req, res) => {
   try {
     console.log(`Delete request received for ID: ${req.params.id}`);
 
-
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
       return res.status(400).json({ msg: "Invalid review ID" });
     }
-
 
     const result = await Review.deleteOne({ _id: req.params.id });
 
