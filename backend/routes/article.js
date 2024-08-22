@@ -56,6 +56,27 @@ router.get("/get/:id", async (req, res) => {
   }
 });
 
+{/* fetch related articles */}
+router.get("/category/:category", async (req,res) =>{
+
+    try {
+      
+      const {category} = req.params;
+      const articles   = await Article.find();
+
+      if(articles.length == 0 ){
+        return res.status(404).json({error: "No Articles found for your requested category"});
+      }
+      res.json(articles);
+
+    } catch (error) {
+      
+        console.error("Error Fetching Articles by your requested category", error.message);
+        res.status(505).json({message: "Server error while fetching reviews"})
+    }
+
+});
+
 
 router.put("/update/:id", async (req, res) => {
   const { id } = req.params;
