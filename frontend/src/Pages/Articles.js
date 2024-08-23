@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Navbar from "../Components/Navbar";
 import axios from "axios";
@@ -15,6 +15,7 @@ const Articles = () => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedArticle, setSelectedArticle] = useState(''); 
+  const navigate = useNavigate();
 
 
   useEffect(() => {
@@ -31,6 +32,10 @@ const Articles = () => {
 
     fetchArticles();
   }, []);
+
+  const handleClickArticle = (article_id) => {
+      navigate(`/editArticle/${article_id}`)
+  }
 
 
   const deleteArticle = async (articleId) => {
@@ -96,20 +101,21 @@ const Articles = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 overflow-y-auto h-full w-full">
                   {articles.map((article) => (
                     <motion.div
-                      key={article._id}
+
+                      onClick={()=>{handleClickArticle(article._id)}}
+                      key={article._id} 
                       className="bg-white p-4 rounded-lg shadow-md relative overflow-hidden border border-baseprimary transition-transform duration-300 transform hover:scale-105"
                       initial={{ opacity: 0, y: 50 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3 }}
-                    >
+                      transition={{ duration: 0.3 }} >
+
+                      <img src= {article.images[0]} alt={article.title} className="scale-90"/>
+
                       <h3 className="text-xl font-bold mb-2 text-gray-800">
                         {article.title}
                       </h3>
                       <p className="text-gray-600 mb-2">
                         Category: {article.category}
-                      </p>
-                      <p className="text-gray-700 mb-2">
-                        {article.description}
                       </p>
                       <p className="text-gray-600">Author: {article.author}</p>
                       <div className="absolute bottom-4 left-4 flex space-x-2">
@@ -151,8 +157,8 @@ const Articles = () => {
               )}
 
               {selectedArticle && (
-                <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-                  <div className="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full relative">
+                <div className="fixed inset-0 w-full bg-black bg-opacity-75  items-center justify-center z-50 p-20">
+                  <div className="flex  flex-col bg-white p-8 rounded-lg shadow-lg h-auto max-w-full w-full">
                     <h3 className="text-2xl font-bold mb-4">
                       {selectedArticle.title}
                     </h3>

@@ -1,29 +1,26 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import Navbar from "../Components/Navbar"; // Import Navbar
+import Navbar from "../Components/Navbar"; 
 import Select from "react-select";
 import "tailwindcss/tailwind.css";
 import { motion } from "framer-motion";
 
-// Animation Variants
 const slideVariants = {
   hidden: { opacity: 0, x: -100 },
   visible: { opacity: 1, x: 0 },
 };
 
-// Font Options for react-select
 const fontOptions = [
   { value: "poppins", label: "Poppins" },
   { value: "russoone", label: "Russo One" },
   { value: "kdamThmorPro", label: "Kdam Thmor Pro" },
-  { value: "lorniasolid", label: "Londrina Solid" },
+  { value: "londrinasolid", label: "Londrina Solid" },
   { value: "bebasneue", label: "Bebas Neue" },
   { value: "bricolagegrotesque", label: "Bricolage Grotesque" },
   { value: "kanit", label: "Kanit" },
 ];
 
-// Image transition options
 const transitionOptions = [
   { value: "fade", label: "Fade" },
   { value: "slide", label: "Slide" },
@@ -31,32 +28,40 @@ const transitionOptions = [
 ];
 
 const EditArticle = () => {
-  const { id } = useParams(); // Get the article ID from the URL
-  const navigate = useNavigate(); // Use useNavigate for navigation
-  const [article, setArticle] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { id } = useParams(); 
+  const navigate = useNavigate(); 
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("");
+  const [imageUrls, setImageUrls] = useState([""]);
+  const [subTitleUrls, setSubTitleUrls] = useState([""]);
+  const [descriptionUrls, setDescriptionUrls] = useState([""]);
+  const [summary, setSummary] = useState("");
+  const [author, setAuthor] = useState("");
   const [selectedFont, setSelectedFont] = useState(fontOptions[0]);
   const [fontSize, setFontSize] = useState(16);
   const [transitionType, setTransitionType] = useState(transitionOptions[0]);
-  const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchArticle = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/articles/edit/${id}`
+          `http://localhost:5000/api/articles/get/${id}`
         );
-        setArticle(response.data);
-        setSelectedFont({
-          value: response.data.font,
-          label: response.data.font,
-        });
-        setFontSize(response.data.fontSize);
+        const articleData = response.data;
+        setTitle(articleData.title);
+        setCategory(articleData.category);
+        setImageUrls(articleData.images || [""]);
+        setSubTitleUrls(articleData.subtitle || [""]);
+        setDescriptionUrls(articleData.description || [""]);
+        setSummary(articleData.summary);
+        setAuthor(articleData.author);
+        setSelectedFont({ value: articleData.font, label: articleData.font });
+        setFontSize(articleData.fontSize);
         setTransitionType({
-          value: response.data.transitionType,
-          label: response.data.transitionType,
+          value: articleData.transitionType,
+          label: articleData.transitionType,
         });
-        setImages(response.data.images || []);
       } catch (error) {
         console.error("Error fetching article:", error);
       } finally {
@@ -67,42 +72,77 @@ const EditArticle = () => {
     fetchArticle();
   }, [id]);
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setArticle({ ...article, [name]: value });
+  const handleImageUrlChange = (index, value) => {
+    const newImageUrls = [...imageUrls];
+    newImageUrls[index] = value;
+    setImageUrls(newImageUrls);
   };
 
-  const handleImageUpload = (e) => {
-    const files = e.target.files;
-    const imageUrls = [];
-    for (let i = 0; i < files.length; i++) {
-      imageUrls.push(URL.createObjectURL(files[i]));
-    }
-    setImages(imageUrls);
+  const handleSubtitleChange = (index, value) => {
+    const newSubTitleUrls = [...subTitleUrls];
+    newSubTitleUrls[index] = value;
+    setSubTitleUrls(newSubTitleUrls);
+  };
+
+  const handleDescriptionChange = (index, value) => {
+    const newDescriptionUrls = [...descriptionUrls];
+    newDescriptionUrls[index] = value;
+    setDescriptionUrls(newDescriptionUrls);
+  };
+
+  const addImageUrlField = () => {
+    setImageUrls([...imageUrls, ""]);
+  };
+
+  const addSubtitleField = () => {
+    setSubTitleUrls([...subTitleUrls, ""]);
+  };
+
+  const addDescriptionField = () => {
+    setDescriptionUrls([...descriptionUrls, ""]);
+  };
+
+  const removeImageUrlField = (index) => {
+    const newImageUrls = imageUrls.filter((_, i) => i !== index);
+    setImageUrls(newImageUrls);
+  };
+
+  const removeSubtitleField = (index) => {
+    const newSubTitleUrls = subTitleUrls.filter((_, i) => i !== index);
+    setSubTitleUrls(newSubTitleUrls);
+  };
+
+  const removeDescriptionField = (index) => {
+    const newDescriptionUrls = descriptionUrls.filter((_, i) => i !== index);
+    setDescriptionUrls(newDescriptionUrls);
   };
 
   const handleUpdate = async (e) => {
     e.preventDefault();
+
+    const articleData = {
+      title,
+      category,
+      subtitle: subTitleUrls,
+      description: descriptionUrls,
+      summary,
+      author,
+      images: imageUrls,
+      font: selectedFont.value,
+      fontSize,
+      transitionType: transitionType.value,
+    };
+
     try {
-      const updatedArticle = {
-        ...article,
-        font: selectedFont.value,
-        fontSize,
-        transitionType: transitionType.value,
-        images,
-      };
       const response = await axios.put(
-        `http://localhost:5000/api/articles/edit/${id}`,
-        updatedArticle
+        `http://localhost:5000/api/articles/update/${id}`,
+        articleData
       );
-      if (response.status === 200) {
-        alert("Article updated successfully!");
-        navigate("/articles/edit");
-      } else {
-        throw new Error("Failed to update article");
-      }
-    } catch (error) {
-      console.error("Error updating article:", error);
+      console.log(response.data);
+      alert("Article updated successfully!");
+      navigate("/articles");
+    } catch (err) {
+      console.error(err);
       alert("Error updating article");
     }
   };
@@ -134,9 +174,8 @@ const EditArticle = () => {
               </label>
               <input
                 type="text"
-                name="title"
-                value={article.title}
-                onChange={handleInputChange}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
                 required
               />
@@ -147,10 +186,115 @@ const EditArticle = () => {
               </label>
               <input
                 type="text"
-                name="category"
-                value={article.category}
-                onChange={handleInputChange}
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-white font-semibold mb-2">
+                Image URLs
+              </label>
+              {imageUrls.map((url, index) => (
+                <div key={index} className="flex items-center mb-2">
+                  <input
+                    type="text"
+                    value={url}
+                    onChange={(e) => handleImageUrlChange(index, e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                    placeholder="Enter image URL"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeImageUrlField(index)}
+                    className="ml-2 px-2 py-1 bg-red-500 text-white rounded"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={addImageUrlField}
+                className="mt-2 px-4 py-2 bg-green-500 text-white rounded"
+              >
+                Add Image URL
+              </button>
+            </div>
+            <div className="mb-4">
+              <label className="block text-white font-semibold mb-2">
+                Titles
+              </label>
+              {subTitleUrls.map((subtitle, index) => (
+                <div key={index} className="flex items-center mb-2">
+                  <input
+                    type="text"
+                    value={subtitle}
+                    onChange={(e) => handleSubtitleChange(index, e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                    placeholder="Enter Title"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeSubtitleField(index)}
+                    className="ml-2 px-2 py-1 bg-red-500 text-white rounded"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={addSubtitleField}
+                className="mt-2 px-4 py-2 bg-green-500 text-white rounded"
+              >
+                Add Title
+              </button>
+            </div>
+            <div className="mb-4">
+              <label className="block text-white font-semibold mb-2">
+                Descriptions
+              </label>
+              {descriptionUrls.map((description, index) => (
+                <div key={index} className="flex items-center mb-2">
+                  <textarea
+                    value={description}
+                    onChange={(e) => handleDescriptionChange(index, e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                    placeholder="Enter Description"
+                    rows="4"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeDescriptionField(index)}
+                    className="ml-2 px-2 py-1 bg-red-500 text-white rounded"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={addDescriptionField}
+                className="mt-2 px-4 py-2 bg-green-500 text-white rounded"
+              >
+                Add Description
+              </button>
+            </div>
+            <div className="mb-4">
+              <label className="block text-white font-semibold mb-2">
+                Summary
+              </label>
+              <textarea
+                value={summary}
+                onChange={(e) => setSummary(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                placeholder="Enter Summary"
+                rows="4"
                 required
               />
             </div>
@@ -160,97 +304,55 @@ const EditArticle = () => {
               </label>
               <input
                 type="text"
-                name="author"
-                value={article.author}
-                onChange={handleInputChange}
+                value={author}
+                onChange={(e) => setAuthor(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
                 required
               />
             </div>
             <div className="mb-4">
               <label className="block text-white font-semibold mb-2">
-                Images
-              </label>
-              <input
-                type="file"
-                multiple
-                accept="image/*"
-                onChange={handleImageUpload}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-white font-semibold mb-2">
-                Content
-              </label>
-              <textarea
-                name="content"
-                value={article.content}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
-                rows="5"
-                style={{
-                  fontFamily: selectedFont.value,
-                  fontSize: `${fontSize}px`,
-                }}
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-white font-semibold mb-2">
-                Font Style
+                Font
               </label>
               <Select
-                value={selectedFont}
-                onChange={(option) => setSelectedFont(option)}
                 options={fontOptions}
+                value={selectedFont}
+                onChange={setSelectedFont}
                 className="w-full"
+                required
               />
             </div>
             <div className="mb-4">
               <label className="block text-white font-semibold mb-2">
-                Font Size (px)
+                Font Size
               </label>
               <input
                 type="number"
                 value={fontSize}
                 onChange={(e) => setFontSize(e.target.value)}
-                min="12"
-                max="48"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
                 required
               />
             </div>
             <div className="mb-4">
               <label className="block text-white font-semibold mb-2">
-                Image Transition
+                Transition Type
               </label>
               <Select
-                value={transitionType}
-                onChange={(option) => setTransitionType(option)}
                 options={transitionOptions}
+                value={transitionType}
+                onChange={setTransitionType}
                 className="w-full"
+                required
               />
             </div>
-            <div className="text-center">
-              <button
-                type="submit"
-                className="px-6 py-2 bg-baseprimary text-white font-bold rounded-lg hover:bg-indigo-600 focus:outline-none transition duration-200"
-              >
-                Update Article
-              </button>
-            </div>
+            <button
+              type="submit"
+              className="w-full bg-baseprimary text-white font-bold py-2 px-4 rounded hover:bg-baseprimarydark transition-colors duration-300"
+            >
+              Update Article
+            </button>
           </form>
-          <div className="mt-6 flex justify-center space-x-4">
-            {images.map((img, index) => (
-              <img
-                key={index}
-                src={img}
-                alt={`Preview ${index + 1}`}
-                className="w-32 h-32 object-cover rounded-lg"
-              />
-            ))}
-          </div>
         </motion.div>
       </div>
     </div>

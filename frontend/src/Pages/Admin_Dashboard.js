@@ -5,8 +5,6 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import Navbar from "../Components/Navbar";
 import axios from "axios";
-import Article from "../Pages/Articles";
-import Review from "../Pages/Reviews";
 import arrowRight from "../assests/arrow-right.svg"; // Replace with your actual image path
 
 // Animation Variants
@@ -24,8 +22,8 @@ const AdminDashboard = () => {
     const fetchData = async () => {
       try {
         const [articlesResponse, reviewsResponse] = await Promise.all([
-          axios.get("/api/articles"),
-          axios.get("/api/reviews"),
+          axios.get("http://localhost:5000/api/articles/get"),
+          axios.get("http://localhost:5000/api/reviews/get"),
         ]);
 
         setArticles(articlesResponse.data);
@@ -100,9 +98,6 @@ const AdminDashboard = () => {
                       </h3>
                       <p className="text-gray-600 mb-2">
                         Category: {article.category}
-                      </p>
-                      <p className="text-gray-700 mb-2">
-                        {article.description}
                       </p>
                       <p className="text-gray-600">Author: {article.author}</p>
                       <button

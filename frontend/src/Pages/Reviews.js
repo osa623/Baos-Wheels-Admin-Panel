@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Navbar from "../Components/Navbar";
 import axios from "axios";
@@ -14,6 +14,7 @@ const Review = () => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedReview, setSelectedReview] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -33,7 +34,7 @@ const Review = () => {
   const deleteReview = async (reviewId) => {
     try {
       const response = await axios.delete(
-        `http://localhost:5000/api/reviews/get/${reviewId}`
+        `http://localhost:5000/api/reviews/delete/${reviewId}`
       );
 
       if (response.status === 200) {
@@ -54,6 +55,10 @@ const Review = () => {
           (error.response ? error.response.data.message : error.message)
       );
     }
+  };
+
+  const handleUpdate = (review_id) => {
+    navigate(`/editReview/${review_id}`);
   };
 
   return (
@@ -112,12 +117,12 @@ const Review = () => {
                         >
                           Delete
                         </button>
-                        <Link
-                          to={`/editReview/${review._id}`}
+                        <div
+                          onClick={()=>handleUpdate(review._id)}
                           className="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition duration-300 cursor-pointer z-20"
                         >
                           Edit
-                        </Link>
+                        </div>
                       </div>
                       <div className="absolute bottom-4 right-4 flex items-center">
                         <button

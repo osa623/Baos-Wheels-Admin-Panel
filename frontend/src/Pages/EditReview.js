@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
-import Navbar from "../Components/Navbar"; // Import Navbar
-import Select from "react-select";
+import { useNavigate, useParams } from "react-router-dom";
 import "tailwindcss/tailwind.css";
 import { motion } from "framer-motion";
+import Select from "react-select";
+import Navbar from "../Components/Navbar";
 
 // Animation Variants
 const slideVariants = {
@@ -23,97 +23,101 @@ const fontOptions = [
   { value: "kanit", label: "Kanit" },
 ];
 
-// Image transition options
-const transitionOptions = [
-  { value: "fade", label: "Fade" },
-  { value: "slide", label: "Slide" },
-  { value: "zoom", label: "Zoom" },
-];
-
+// EditReview Component
 const EditReview = () => {
-  const { id } = useParams(); // Get the review ID from the URL
-  const navigate = useNavigate(); // Use useNavigate for navigation
-  const [review, setReview] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const { id } = useParams(); // Get the review ID from the route parameters
+  const [review, setReview] = useState({});
+  const [imageUrls, setImageUrls] = useState([]);
   const [selectedFont, setSelectedFont] = useState(fontOptions[0]);
   const [fontSize, setFontSize] = useState(16);
-  const [transitionType, setTransitionType] = useState(transitionOptions[0]);
-  const [images, setImages] = useState([]);
 
+  const [engine, setEngine] = useState("");
+  const [drivetrain, setDrivetrain] = useState("");
+  const [transmission, setTransmission] = useState("");
+  const [fuelEconomy, setFueleconomy] = useState("");
+  const [seatingCapacity, setSeatingCapacity] = useState("");
+  const [singleprice, setSingleprice] = useState("");
+
+  // Fetch review data by ID
   useEffect(() => {
     const fetchReview = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:5000/api/reviews/${id}`
-        );
-        setReview(response.data);
-        setSelectedFont({
-          value: response.data.font,
-          label: response.data.font,
-        });
-        setFontSize(response.data.fontSize);
-        setTransitionType({
-          value: response.data.transitionType,
-          label: response.data.transitionType,
-        });
-        setImages(response.data.images || []);
-      } catch (error) {
-        console.error("Error fetching review:", error);
-      } finally {
-        setLoading(false);
+        const response = await axios.get(`http://localhost:5000/api/reviews/get/${id}`);
+        const data = response.data;
+
+        setReview(data);
+        setImageUrls(data.images || []);
+        setSelectedFont(fontOptions.find((font) => font.value === data.font) || fontOptions[0]);
+        setFontSize(data.fontSize || 16);
+
+        setEngine(data.engine || "");
+        setDrivetrain(data.drivetrain || "");
+        setTransmission(data.transmission || "");
+        setFueleconomy(data.fuelEconomy || "");
+        setSeatingCapacity(data.seatingCapacity || "");
+        setSingleprice(data.singleprice || "");
+      } catch (err) {
+        console.error(err);
+        alert("Error fetching review data");
       }
     };
 
     fetchReview();
   }, [id]);
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setReview({ ...review, [name]: value });
+  const handleImageUrlChange = (index, value) => {
+    const newImageUrls = [...imageUrls];
+    newImageUrls[index] = value;
+    setImageUrls(newImageUrls);
   };
 
-  const handleImageUpload = (e) => {
-    const files = e.target.files;
-    const imageUrls = [];
-    for (let i = 0; i < files.length; i++) {
-      imageUrls.push(URL.createObjectURL(files[i]));
-    }
-    setImages(imageUrls);
+  const addImageUrlField = () => {
+    setImageUrls([...imageUrls, ""]);
   };
 
-  const handleUpdate = async (e) => {
+  const removeImageUrlField = (index) => {
+    const newImageUrls = imageUrls.filter((_, i) => i !== index);
+    setImageUrls(newImageUrls);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const updatedReview = {
         ...review,
+        images: imageUrls,
         font: selectedFont.value,
         fontSize,
-        transitionType: transitionType.value,
-        images,
+        engine,
+        drivetrain,
+        transmission,
+        fuelEconomy,
+        seatingCapacity,
+        singleprice,
       };
+
       const response = await axios.put(
-        `http://localhost:5000/api/reviews/${id}`,
+        `http://localhost:5000/api/reviews/update/${id}`,
         updatedReview
       );
-      if (response.status === 200) {
-        alert("Review updated successfully!");
-        navigate("/review");
-      } else {
-        throw new Error("Failed to update review");
-      }
-    } catch (error) {
-      console.error("Error updating review:", error);
+      console.log(response.data);
+      alert("Review updated successfully!");
+      navigate("/review");
+    } catch (err) {
+      console.error(err);
       alert("Error updating review");
     }
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setReview({ ...review, [name]: value });
+  };
 
   return (
     <div className="relative min-h-screen w-full bg-baseextra5 flex flex-col items-center">
-      <Navbar /> {/* Using Navbar for consistency */}
+      <Navbar />
       <div className="pt-16 flex flex-col items-center w-full p-4">
         <motion.div
           className="bg-baseextra4 shadow-lg rounded-lg p-8 w-full max-w-2xl relative border-2 border-baseprimary"
@@ -127,7 +131,7 @@ const EditReview = () => {
           </h2>
           <div className="w-1/2 h-1 bg-baseprimary animate-pulse mx-auto mb-6"></div>
           <div className="absolute inset-0 rounded-lg shadow-lg glow-effect"></div>
-          <form onSubmit={handleUpdate} className="relative z-10">
+          <form onSubmit={handleSubmit} className="relative z-10">
             <div className="mb-4">
               <label className="block text-white font-semibold mb-2">
                 Title
@@ -135,7 +139,7 @@ const EditReview = () => {
               <input
                 type="text"
                 name="title"
-                value={review.title}
+                value={review.title || ""}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
                 required
@@ -148,7 +152,7 @@ const EditReview = () => {
               <input
                 type="text"
                 name="category"
-                value={review.category}
+                value={review.category || ""}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
                 required
@@ -161,7 +165,7 @@ const EditReview = () => {
               <input
                 type="text"
                 name="brand"
-                value={review.brand}
+                value={review.brand || ""}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
                 required
@@ -169,23 +173,109 @@ const EditReview = () => {
             </div>
             <div className="mb-4">
               <label className="block text-white font-semibold mb-2">
-                Images
+                Image URLs
+              </label>
+              {imageUrls.map((url, index) => (
+                <div key={index} className="flex items-center mb-2">
+                  <input
+                    type="text"
+                    value={url}
+                    onChange={(e) => handleImageUrlChange(index, e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                    placeholder="Enter image URL"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeImageUrlField(index)}
+                    className="ml-2 px-2 py-1 bg-red-500 text-white rounded"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={addImageUrlField}
+                className="mt-2 px-4 py-2 bg-green-500 text-white rounded"
+              >
+                Add Image URL
+              </button>
+            </div>
+            <div className="grid grid-cols-2 h-auto w-auto gap-3 items-center">
+              <label className="block text-white font-semibold mb-2">
+                Engine
               </label>
               <input
-                type="file"
-                multiple
-                accept="image/*"
-                onChange={handleImageUpload}
+                type="text"
+                value={engine}
+                onChange={(e) => setEngine(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                required
+              />
+
+              <label className="block text-white font-semibold mb-2">
+                Drivetrain
+              </label>
+              <input
+                type="text"
+                value={drivetrain}
+                onChange={(e) => setDrivetrain(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                required
+              />
+
+              <label className="block text-white font-semibold mb-2">
+                Transmission
+              </label>
+              <input
+                type="text"
+                value={transmission}
+                onChange={(e) => setTransmission(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                required
+              />
+
+              <label className="block text-white font-semibold mb-2">
+                Fuel Economy
+              </label>
+              <input
+                type="text"
+                value={fuelEconomy}
+                onChange={(e) => setFueleconomy(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                required
+              />
+
+              <label className="block text-white font-semibold mb-2">
+                Seating Capacity
+              </label>
+              <input
+                type="text"
+                value={seatingCapacity}
+                onChange={(e) => setSeatingCapacity(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                required
+              />
+
+              <label className="block text-white font-semibold mb-2">
+                Single Price
+              </label>
+              <input
+                type="text"
+                value={singleprice}
+                onChange={(e) => setSingleprice(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                required
               />
             </div>
             <div className="mb-4">
               <label className="block text-white font-semibold mb-2">
-                Description
+                Overview:
               </label>
               <textarea
-                name="description"
-                value={review.description}
+                name="overview"
+                value={review.overview || ""}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
                 rows="5"
@@ -198,72 +288,118 @@ const EditReview = () => {
             </div>
             <div className="mb-4">
               <label className="block text-white font-semibold mb-2">
-                Author
+                Exterior:
               </label>
-              <input
-                type="text"
-                name="author"
-                value={review.author}
+              <textarea
+                name="exterior"
+                value={review.exterior || ""}
                 onChange={handleInputChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                rows="5"
+                style={{
+                  fontFamily: selectedFont.value,
+                  fontSize: `${fontSize}px`,
+                }}
                 required
               />
             </div>
             <div className="mb-4">
               <label className="block text-white font-semibold mb-2">
-                Font Style
+                Interior:
               </label>
-              <Select
-                value={selectedFont}
-                onChange={(option) => setSelectedFont(option)}
-                options={fontOptions}
-                className="w-full"
+              <textarea
+                name="interior"
+                value={review.interior || ""}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                rows="5"
+                style={{
+                  fontFamily: selectedFont.value,
+                  fontSize: `${fontSize}px`,
+                }}
+                required
               />
             </div>
             <div className="mb-4">
               <label className="block text-white font-semibold mb-2">
-                Font Size (px)
+                Performance:
+              </label>
+              <textarea
+                name="performance"
+                value={review.performance || ""}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                rows="5"
+                style={{
+                  fontFamily: selectedFont.value,
+                  fontSize: `${fontSize}px`,
+                }}
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-white font-semibold mb-2">
+                Price:
+              </label>
+              <textarea
+                name="price"
+                value={review.price || ""}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                rows="5"
+                style={{
+                  fontFamily: selectedFont.value,
+                  fontSize: `${fontSize}px`,
+                }}
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-white font-semibold mb-2">
+                Safety:
+              </label>
+              <textarea
+                name="safety"
+                value={review.safety || ""}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                rows="5"
+                style={{
+                  fontFamily: selectedFont.value,
+                  fontSize: `${fontSize}px`,
+                }}
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-white font-semibold mb-2">
+                Font:
+              </label>
+              <Select
+                value={selectedFont}
+                onChange={setSelectedFont}
+                options={fontOptions}
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-white font-semibold mb-2">
+                Font Size:
               </label>
               <input
                 type="number"
                 value={fontSize}
                 onChange={(e) => setFontSize(e.target.value)}
-                min="12"
-                max="48"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
                 required
               />
             </div>
-            <div className="mb-4">
-              <label className="block text-white font-semibold mb-2">
-                Image Transition
-              </label>
-              <Select
-                value={transitionType}
-                onChange={(option) => setTransitionType(option)}
-                options={transitionOptions}
-                className="w-full"
-              />
-            </div>
-            <div className="text-center">
-              <button
-                type="submit"
-                className="px-6 py-2 bg-baseprimary text-white font-bold rounded-lg hover:bg-indigo-600 focus:outline-none transition duration-200"
-              >
-                Update Review
-              </button>
-            </div>
+            <button
+              type="submit"
+              className="w-full px-4 py-2 bg-baseprimary text-white rounded-lg hover:bg-baseextra5 transition duration-300"
+            >
+              Update Review
+            </button>
           </form>
-          <div className="mt-6 flex justify-center space-x-4">
-            {images.map((img, index) => (
-              <img
-                key={index}
-                src={img}
-                alt={`Preview ${index + 1}`}
-                className="w-32 h-32 object-cover rounded-lg"
-              />
-            ))}
-          </div>
         </motion.div>
       </div>
     </div>
