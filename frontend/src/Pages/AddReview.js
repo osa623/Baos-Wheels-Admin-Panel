@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 import "tailwindcss/tailwind.css";
 import { motion } from "framer-motion";
 import Select from "react-select";
-import Navbar from "../Components/Navbar"; // Assuming Navbar is a common component
+import Navbar from "../Components/Navbar";
 
 // Animation Variants
 const slideVariants = {

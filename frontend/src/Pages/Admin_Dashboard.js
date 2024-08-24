@@ -1,11 +1,10 @@
-// AdminDashboard.jsx
-
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import Navbar from "../Components/Navbar";
 import axios from "axios";
-import arrowRight from "../assests/arrow-right.svg"; // Replace with your actual image path
+import arrowRight from "../assests/arrow-right.svg";
+import { useAuth } from "../auth/AuthContext";
 
 // Animation Variants
 const containerVariants = {
@@ -17,8 +16,16 @@ const AdminDashboard = () => {
   const [articles, setArticles] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { authState } = useAuth();
+
+
 
   useEffect(() => {
+
+    if (!authState.isAuthenticated) {
+      return <Navigate to="/login" />;
+    }
+
     const fetchData = async () => {
       try {
         const [articlesResponse, reviewsResponse] = await Promise.all([
@@ -36,13 +43,13 @@ const AdminDashboard = () => {
     };
 
     fetchData();
-  }, []);
+  }, [authState.isAuthenticated]);
 
   const deleteArticle = async (articleId) => {
     try {
       await axios.delete(`/api/articles/${articleId}`);
       setArticles((prevArticles) =>
-        prevArticles.filter((article) => article.id !== articleId)
+        prevArticles.filter((article) => article._id !== articleId)
       );
       alert("Article deleted successfully!");
     } catch (error) {
@@ -55,7 +62,7 @@ const AdminDashboard = () => {
     try {
       await axios.delete(`/api/reviews/${reviewId}`);
       setReviews((prevReviews) =>
-        prevReviews.filter((review) => review.id !== reviewId)
+        prevReviews.filter((review) => review._id !== reviewId)
       );
       alert("Review deleted successfully!");
     } catch (error) {
@@ -68,9 +75,7 @@ const AdminDashboard = () => {
     <div className="relative h-screen w-full bg-baseextra5">
       <Navbar />
       <div className="pt-16 flex flex-col h-full w-full p-4">
-        {/* Flex container for horizontal layout */}
         <div className="flex w-full gap-4 mb-4 relative">
-          {/* Articles Container */}
           <div className="flex-1 flex flex-col items-center p-4 relative">
             <div className="w-full min-h-[400px] rounded-lg shadow-lg bg-baseextra4 flex flex-col items-center justify-start relative overflow-hidden border-2 border-baseprimary">
               <h2 className="text-white font-russoone text-3xl font-bold mt-4 mb-2">
@@ -79,7 +84,6 @@ const AdminDashboard = () => {
               <div className="w-1/2 h-1 bg-baseprimary animate-pulse"></div>
               <div className="absolute inset-0 rounded-lg shadow-lg glow-effect"></div>
               {loading ? (
-                // Loading Spinner
                 <div className="flex justify-center items-center h-full">
                   <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-baseprimary"></div>
                 </div>
@@ -117,7 +121,6 @@ const AdminDashboard = () => {
                   ))}
                 </div>
               )}
-              {/* Arrow Icon with Link */}
               <Link to="/articles" className="absolute bottom-4 right-4">
                 <img
                   src={arrowRight}
@@ -131,7 +134,6 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          {/* Reviews Container */}
           <div className="flex-1 flex flex-col items-center p-4 relative">
             <div className="w-full min-h-[400px] rounded-lg shadow-lg bg-baseextra4 flex flex-col items-center justify-start relative overflow-hidden border-2 border-baseprimary">
               <h2 className="text-white font-russoone text-3xl font-bold mt-4 mb-2">
@@ -140,7 +142,6 @@ const AdminDashboard = () => {
               <div className="w-1/2 h-1 bg-baseprimary animate-pulse"></div>
               <div className="absolute inset-0 rounded-lg shadow-lg glow-effect"></div>
               {loading ? (
-                // Loading Spinner
                 <div className="flex justify-center items-center h-full">
                   <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-baseprimary"></div>
                 </div>
@@ -179,7 +180,6 @@ const AdminDashboard = () => {
                   ))}
                 </div>
               )}
-              {/* Arrow Icon with Link */}
               <Link to="/review" className="absolute bottom-4 right-4">
                 <img
                   src={arrowRight}

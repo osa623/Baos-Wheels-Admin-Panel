@@ -4,7 +4,6 @@ import { AuthProvider } from "./auth/AuthContext";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import LoginPage from "./Pages/LoginPage";
 import AdminDashboard from "./Pages/Admin_Dashboard";
-import RegisterPage from "./Pages/RegisterPage";
 import Review from "./Pages/Reviews";
 import Articles from "./Pages/Articles";
 import Users from "./Pages/Users";
@@ -12,21 +11,18 @@ import AddArticle from "./Pages/AddArticle";
 import AddReview from "./Pages/AddReview";
 import EditReview from "./Pages/EditReview";
 import EditArticle from "./Pages/EditArticle";
+import Errorpage from "./Pages/Errorpage";
 
 function App() {
   return (
     <AuthProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<LoginPage />} />
-          {/* Wrap ProtectedRoute with a Route */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/error" element={<Errorpage />} />
           <Route
             path="/dashboard"
             element={<ProtectedRoute component={AdminDashboard} />}
-          />
-          <Route
-            path="/Registration"
-            element={<ProtectedRoute component={RegisterPage} />}
           />
           <Route
             path="/Review"

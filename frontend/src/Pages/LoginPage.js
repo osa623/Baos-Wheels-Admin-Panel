@@ -1,12 +1,31 @@
-import React from 'react';
-
-// Platform logo
+import React, { useState } from 'react';
+import axios from 'axios';
 import bwlogo from '../assests/baoswheelslogo.png';
 
 const LoginPage = () => {
-  const handleSubmit = (e) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login logic here
+    setError('');
+    setLoading(true);
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/users/login', { email, password });
+      setLoading(false);
+      
+      // Save the token to localStorage or handle it as needed
+      localStorage.setItem('token', response.data.token);
+      
+      // Redirect the user to the admin dashboard
+      window.location.href = '/dashboard';
+    } catch (err) {
+      setLoading(false);
+      setError('Invalid credentials, please try again.');
+    }
   };
 
   return (
@@ -23,19 +42,8 @@ const LoginPage = () => {
             <h1 className="text-xl font-bold leading-tight tracking-tight text-baseextra4 md:text-2xl font-kanit">
               Sign in to your account
             </h1>
+            {error && <div className="text-red-500 text-sm mb-4">{error}</div>}
             <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
-              <div>
-                <label htmlFor="role" className="block mb-2 text-sm font-medium text-baseextra4">Role</label>
-                <input
-                  type="text"
-                  name="role"
-                  id="role"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                  placeholder="example:admin"
-                  required
-                />
-              </div>
-
               <div>
                 <label htmlFor="email" className="block mb-2 text-sm font-medium text-baseextra4">Email Address</label>
                 <input
@@ -44,6 +52,8 @@ const LoginPage = () => {
                   id="email"
                   className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                   placeholder="name@company.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
@@ -56,12 +66,14 @@ const LoginPage = () => {
                   id="password"
                   className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                   placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   required
                 />
               </div>
 
-              <button type="submit" className="w-full text-white bg-baseextra4 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                Sign In
+              <button type="submit" className="w-full text-white bg-baseextra4 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" disabled={loading}>
+                {loading ? 'Signing In...' : 'Sign In'}
               </button>
             </form>
           </div>

@@ -3,6 +3,7 @@ import cors from "cors";
 import { connect } from "./utils/dbconnection.js";
 import reviewRoute from "./routes/review.js";
 import articleRoute from "./routes/article.js"; 
+import userRoute from "./routes/user.js";
 
 // Initialize the express app
 const app = express();
@@ -36,3 +37,5 @@ app.listen(PORT, () => {
  
 app.use("/api/reviews", reviewRoute);
 app.use("/api/articles", articleRoute);
+app.use("/api/users", userRoute);
+
