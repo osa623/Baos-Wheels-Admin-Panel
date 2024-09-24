@@ -6,8 +6,13 @@ import reviewRoute from "./routes/review.js";
 import articleRoute from "./routes/article.js"; 
 import userRoute from "./routes/user.js";
 
-const logEvents = require('./logEvents.js');
+const http = require('http');
+const path = require('fs');
+const fsPromises = require('fs').promises;
 
+
+
+const logEvents = require('./logEvents.js');
 const EventEmitter = require('events');
 
 class MyEmitter extends EventEmitter {};
@@ -15,12 +20,24 @@ class MyEmitter extends EventEmitter {};
 
 const myEmitter = new MyEmitter();
 
-//adding a listner for the log events
-myEmitter.on('log', (msg) => logEvents(msg));
+const server = http.createServer((req, res) => {
+     console.log(req.url, req.method);
+});
 
-setTimeout(()=> {
+
+
+
+
+
+
+
+//adding a listner for the log events
+//myEmitter.on('log', (msg) => logEvents(msg));
+
+/*setTimeout(()=> {
+  //Emitting the Event
   myEmitter.emit('log', 'Log event emitted!');
-})
+})*/
 
 // Load environment variables
 dotenv.config();

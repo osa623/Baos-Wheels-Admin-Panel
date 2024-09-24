@@ -44,9 +44,6 @@ const LoginPage = () => {
 
       setLoading(false);
 
-      // Save the token to localStorage or handle it as needed
-      localStorage.setItem('token', response.data.token);
-
     } catch (err) {
       setLoading(false);
       if (!err?.response) {

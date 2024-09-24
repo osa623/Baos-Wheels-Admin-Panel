@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcrypt');
 const User = require('../models/User');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const config = require('../config/configs');
 
 // Register a new Admin
 router.post('/reg', async (req, res) => {
@@ -37,14 +36,13 @@ router.post('/reg', async (req, res) => {
         // Sign JWT and return token
         jwt.sign(
             payload,
-            config.JWT_SECRET,
-            { expiresIn: '45m' }, // Token expires in 45 minutes
+            process.env.JWT_SECRET, // Use the secret from .env
+            { expiresIn: '45m' },
             (err, token) => {
                 if (err) throw err;
                 res.json({ token });
             }
         );
-
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server error');
@@ -56,29 +54,26 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        // Check if the user exists
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(400).json({ msg: 'User not found' });
         }
 
-        // Validate password
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
             return res.status(400).json({ msg: 'Invalid credentials' });
         }
 
         const payload = {
-            user: {
-                id: user._id
-            }
+          user: { id: user.id }
+
         };
 
-        // Sign JWT and return token with expiration time
+        // Sign JWT 
         jwt.sign(
             payload,
-            config.JWT_SECRET, // Use your config secret here
-            { expiresIn: '45m' }, // Token expires in 45 minutes
+            process.env.ACCESS_TOKEN_SECRET, 
+            { expiresIn: '45m' },
             (err, token) => {
                 if (err) throw err;
                 res.json({ token, user });
