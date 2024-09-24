@@ -4,7 +4,6 @@ const bcrypt = require('bcrypt');
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const config = require('../config/configs');
-const auth = require('../middleware/auth');
 
 // Register a new Admin
 router.post('/reg', async (req, res) => {
@@ -23,6 +22,7 @@ router.post('/reg', async (req, res) => {
             password
         });
 
+        // Hash the password
         const salt = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(password, salt);
 
@@ -34,10 +34,11 @@ router.post('/reg', async (req, res) => {
             }
         };
 
+        // Sign JWT and return token
         jwt.sign(
             payload,
             config.JWT_SECRET,
-            { expiresIn: '45m' },
+            { expiresIn: '45m' }, // Token expires in 45 minutes
             (err, token) => {
                 if (err) throw err;
                 res.json({ token });
@@ -50,25 +51,43 @@ router.post('/reg', async (req, res) => {
     }
 });
 
+// Login Route
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
-  
+
     try {
-      const user = await User.findOne({ email });
-      if (!user) {
-        throw new Error('User not found');
-      }
-  
-      const isPasswordValid = await bcrypt.compare(password, user.password);
-      if (!isPasswordValid) {
-        throw new Error('Invalid credentials');
-      }
-  
-      const token = jwt.sign({ userId: user._id }, 'your_jwt_secret');
-      res.json({ token, user });
-    } catch (error) {
-      res.status(400).json({ error: error.message });
+        // Check if the user exists
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ msg: 'User not found' });
+        }
+
+        // Validate password
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(400).json({ msg: 'Invalid credentials' });
+        }
+
+        const payload = {
+            user: {
+                id: user._id
+            }
+        };
+
+        // Sign JWT and return token with expiration time
+        jwt.sign(
+            payload,
+            config.JWT_SECRET, // Use your config secret here
+            { expiresIn: '45m' }, // Token expires in 45 minutes
+            (err, token) => {
+                if (err) throw err;
+                res.json({ token, user });
+            }
+        );
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ msg: 'Server error' });
     }
-  });
+});
 
 module.exports = router;

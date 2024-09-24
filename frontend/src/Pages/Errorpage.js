@@ -18,7 +18,7 @@ const Errorpage = () => {
                   width:'500px'
                 }}/>
                 Error in Login ;{''}
-                <Link to="/login">
+                <Link to="/">
                 <button className='bg-baseextra4 p-3 rounded-full text-primary font-russoone text-xl mt-5 hover:drop-shadow-2xl'>
                   Back to Login
                 </button></Link>

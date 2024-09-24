@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Link, Navigate } from "react-router-dom";
+import { Link} from "react-router-dom";
 import Navbar from "../Components/Navbar";
 import axios from "axios";
 import arrowRight from "../assests/arrow-right.svg";
-import { useAuth } from "../auth/AuthContext";
 
 // Animation Variants
 const containerVariants = {
@@ -16,15 +15,13 @@ const AdminDashboard = () => {
   const [articles, setArticles] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { authState } = useAuth();
+
 
 
 
   useEffect(() => {
 
-    if (!authState.isAuthenticated) {
-      return <Navigate to="/login" />;
-    }
+
 
     const fetchData = async () => {
       try {
@@ -43,7 +40,7 @@ const AdminDashboard = () => {
     };
 
     fetchData();
-  }, [authState.isAuthenticated]);
+  },);
 
   const deleteArticle = async (articleId) => {
     try {
