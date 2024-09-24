@@ -6,6 +6,22 @@ import reviewRoute from "./routes/review.js";
 import articleRoute from "./routes/article.js"; 
 import userRoute from "./routes/user.js";
 
+const logEvents = require('./logEvents.js');
+
+const EventEmitter = require('events');
+
+class MyEmitter extends EventEmitter {};
+
+
+const myEmitter = new MyEmitter();
+
+//adding a listner for the log events
+myEmitter.on('log', (msg) => logEvents(msg));
+
+setTimeout(()=> {
+  myEmitter.emit('log', 'Log event emitted!');
+})
+
 // Load environment variables
 dotenv.config();
 
