@@ -7,6 +7,10 @@ import RequireAuth from "./auth/RequireAuth";
 //pages
 import LoginPage from "./Pages/LoginPage";
 import AdminDashboard from "./Pages/Admin_Dashboard";
+import AddArticle from "./Pages/AddArticle";
+import Articles from './Pages/Articles';
+import Reviews from './Pages/Reviews';
+import AddReviews from './Pages/AddReview';
 
 
 
@@ -17,13 +21,18 @@ function App() {
         <Route path="/Login" element={<LoginPage />} />
 
        {/* Private Interfaces */}
-        <Route element = {<RequireAuth/>}/>
-          <Route path="/Dashboard" element={<AdminDashboard/>}/>
-
-
-
+        <Route element={<RequireAuth />}>
+          <Route path="/Dashboard" element={<AdminDashboard />} />
+          <Route path="/Articles" element={<Articles />}/>
+          <Route path="/AddArticle" element={<Articles />}/>
+          <Route path="/Reviews" element={<Reviews />}/>
+          <Route path="/AddArticle" element={<AddReviews />}/>
+        </Route>
     </Routes>
   );
 }
 
 export default App;
+
+
+

@@ -1,16 +1,21 @@
-import { useRef, useState, useEffect, useContext } from 'react';
+import { useRef, useState, useEffect} from 'react';
 import axios from 'axios';
 import bwlogo from '../assests/baoswheelslogo.png';
 import useAuth from '../hooks/useAuth';
+import {  useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
   const { login } = useAuth();
+
+  const navigate = useNavigate();
+
+
+
   const userRef = useRef();
   const errRef = useRef();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [success, setSuccess] = useState(false);
   const [errMsg, setErrMsg] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -40,13 +45,15 @@ const LoginPage = () => {
 
       const { token } = response.data;
       console.log('token :', token);
+      alert("Login Sucessfully");
+      
 
       // Save token in the AuthContext and localStorage
       login(token);
 
       setEmail('');
       setPassword('');
-      setSuccess(true);
+      navigate('/Dashboard', { replace: true });
       setLoading(false);
 
     } catch (err) {
@@ -65,14 +72,7 @@ const LoginPage = () => {
   };
 
   return (
-    <>
-      {success ? (
-        <div className='relative h-screen w-[100vw] flex justify-center items-center'>
-          <h1>You are logged in!</h1>
-          <br />
-          <p>Go to Home</p>
-        </div>
-      ) : (
+
         <div className='relative h-screen w-full bg-baseextra4'>
           <div className='flex flex-col h-[20vh] w-full bg-baseextra4 items-center justify-center'>
             <div className='flex h-[10vh] w-[20vw] bg-baseextra3 rounded-xl items-center justify-center cursor-default'>
@@ -162,8 +162,8 @@ const LoginPage = () => {
             />
           </div>
         </div>
-      )}
-    </>
+    
+ 
   );
 };
 

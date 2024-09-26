@@ -16,12 +16,12 @@ const Navbar = () => {
             </Link>
           </li>
           <li className="hover:text-baseprimary">
-            <Link to="/review" className="hover:bg-transparent">
+            <Link to="/Reviews" className="hover:bg-transparent">
               Reviews
             </Link>
           </li>
           <li className="hover:text-baseprimary">
-            <Link to="/articles" className="hover:bg-transparent">
+            <Link to="/Articles" className="hover:bg-transparent">
               Articles
             </Link>
           </li>
@@ -31,7 +31,7 @@ const Navbar = () => {
             </Link>
           </li>
           <li className="hover:text-baseprimary">
-            <Link to="/logout" className="hover:bg-transparent">
+            <Link to="/Login" className="hover:bg-transparent">
               Logout
             </Link>
           </li>

@@ -1,37 +1,24 @@
-import React, { createContext, useState, useEffect } from 'react';
+// src/context/AuthProvider.js
+import { createContext, useState } from 'react';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [token, setToken] = useState('');
+    const [auth, setAuth] = useState({ user: null }); // Initialize user state
 
-  // Check if the token exists in localStorage on page load
-  useEffect(() => {
-    const savedToken = localStorage.getItem('token');
-    if (savedToken) {
-      setToken(savedToken);
-      setIsAuthenticated(true);
-    }
-  }, []);
+    const login = (token) => {
+        setAuth({ user: true, token }); // Set user state on login
+    };
 
-  const login = (token) => {
-    localStorage.setItem('token', token); // Store the token in localStorage
-    setToken(token);
-    setIsAuthenticated(true);
-  };
+    const logout = () => {
+        setAuth({ user: null }); // Clear user state on logout
+    };
 
-  const logout = () => {
-    localStorage.removeItem('token');
-    setToken('');
-    setIsAuthenticated(false);
-  };
-
-  return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout, token }}>
-      {children}
-    </AuthContext.Provider>
-  );
+    return (
+        <AuthContext.Provider value={{ auth, login, logout }}>
+            {children}
+        </AuthContext.Provider>
+    );
 };
 
 export default AuthContext;
