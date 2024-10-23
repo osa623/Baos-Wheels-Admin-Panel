@@ -4,7 +4,9 @@
   "description": "Admin Panel of Baos wheels web application",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon --exec babel-node server.js"
+    "start": "nodemon --exec babel-node server.js",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "author": "Osanda Muthukumarana",
   "license": "ISC",

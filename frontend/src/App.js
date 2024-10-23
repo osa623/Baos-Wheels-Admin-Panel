@@ -24,9 +24,9 @@ function App() {
         <Route element={<RequireAuth />}>
           <Route path="/Dashboard" element={<AdminDashboard />} />
           <Route path="/Articles" element={<Articles />}/>
-          <Route path="/AddArticle" element={<Articles />}/>
+          <Route path="/AddArticle" element={<AddArticle />}/>
           <Route path="/Reviews" element={<Reviews />}/>
-          <Route path="/AddArticle" element={<AddReviews />}/>
+          <Route path="/AddReview" element={<AddReviews />}/>
         </Route>
     </Routes>
   );
