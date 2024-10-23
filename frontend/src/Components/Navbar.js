@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import bwlogo from "../assests/baoswheelslogo.png";
 
 const Navbar = () => {
@@ -10,29 +11,29 @@ const Navbar = () => {
       <div className="navbar-center">
         <ul className="menu menu-horizontal text-primary font-russoone text-2xl gap-12 ml-64">
           <li className="hover:text-baseprimary">
-            <a href="#dashboard" className="hover:bg-transparent">
+            <Link to="/dashboard" className="hover:bg-transparent">
               Dashboard
-            </a>
+            </Link>
           </li>
           <li className="hover:text-baseprimary">
-            <a href="#reviews" className="hover:bg-transparent">
+            <Link to="/review" className="hover:bg-transparent">
               Reviews
-            </a>
+            </Link>
           </li>
           <li className="hover:text-baseprimary">
-            <a href="#articles" className="hover:bg-transparent">
+            <Link to="/articles" className="hover:bg-transparent">
               Articles
-            </a>
+            </Link>
           </li>
           <li className="hover:text-baseprimary">
-            <a href="#users" className="hover:bg-transparent">
+            <Link to="/users" className="hover:bg-transparent">
               Users
-            </a>
+            </Link>
           </li>
           <li className="hover:text-baseprimary">
-            <a href="#logout" className="hover:bg-transparent">
+            <Link to="/logout" className="hover:bg-transparent">
               Logout
-            </a>
+            </Link>
           </li>
         </ul>
       </div>
