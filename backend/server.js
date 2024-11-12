@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { connect } from "./utils/dbconnection.js";
+import { connect } from "./utils/dbconnection.js"; // Make sure this path is correct
 import reviewRoute from "./routes/review.js"; // Import review route
 import articleRoute from "./routes/article.js"; // Import article route
 
@@ -8,10 +8,10 @@ import articleRoute from "./routes/article.js"; // Import article route
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Use CORS middleware
+// Use CORS middleware to allow access from your frontend domain
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "https://osa623.github.io/Baos_wheels_Web_Application/", // Replace with the URL of your frontend (GitHub Pages or any live server)
     credentials: true,
   })
 );
@@ -31,7 +31,7 @@ app.use("/api/reviews", reviewRoute);
 app.use("/api/articles", articleRoute);
 
 // Start the server and connect to the database
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`API is running on port ${PORT}`);
   connect(); // Connect to MongoDB
 });
