@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 5000;
 // Use CORS middleware to allow access from your frontend domain
 app.use(
   cors({
-    origin: "https://osa623.github.io", // Replace with the URL of your frontend (GitHub Pages or any live server)
+    origin: "https://osa623.github.io/Baos_wheels_Web_Application/", // Replace with the URL of your frontend (GitHub Pages or any live server)
     credentials: true,
   })
 );
