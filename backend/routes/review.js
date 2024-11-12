@@ -39,8 +39,15 @@ router.get("/", async (req, res) => {
 
 // Get a review by ID
 router.get("/:id", async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const review = await Review.findById(req.params.id);
+    // Check if the provided ID is valid
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ msg: "Invalid review ID" });
+    }
+
+    const review = await Review.findById(id);
 
     if (!review) {
       return res.status(404).json({ msg: "Review not found" });
@@ -53,17 +60,24 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// Update a review
+// Update a review by ID
 router.put("/:id", async (req, res) => {
+  const { id } = req.params;
   const { title, category, brand, images, description, author } = req.body;
 
   try {
-    const review = await Review.findById(req.params.id);
+    // Check if the provided ID is valid
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ msg: "Invalid review ID" });
+    }
+
+    const review = await Review.findById(id);
 
     if (!review) {
       return res.status(404).json({ msg: "Review not found" });
     }
 
+    // Update review fields if new data is provided
     review.title = title || review.title;
     review.category = category || review.category;
     review.brand = brand || review.brand;
@@ -79,24 +93,23 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// Delete a review
+// Delete a review by ID
 router.delete("/:id", async (req, res) => {
-  try {
-    console.log(`Delete request received for ID: ${req.params.id}`);
+  const { id } = req.params;
 
-    // Check if the ID is valid
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+  try {
+    // Check if the provided ID is valid
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ msg: "Invalid review ID" });
     }
 
-    // Attempt to delete the review
-    const result = await Review.deleteOne({ _id: req.params.id });
+    const result = await Review.deleteOne({ _id: id });
 
     if (result.deletedCount === 0) {
       return res.status(404).json({ msg: "Review not found" });
     }
 
-    console.log(`Review with ID ${req.params.id} removed successfully.`);
+    console.log(`Review with ID ${id} removed successfully.`);
     res.json({ msg: "Review removed" });
   } catch (err) {
     console.error("Error deleting review:", err.message);
