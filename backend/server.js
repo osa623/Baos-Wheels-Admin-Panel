@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
-import { connect } from "./utils/dbconnection.js"; // Make sure this path is correct
+import pkg from "./utils/dbconnection.js"; // Import the entire module as a default import
+const { connect } = pkg;// Make sure this path is correct
 import reviewRoute from "./routes/review.js"; // Import review route
 import articleRoute from "./routes/article.js"; // Import article route
 
